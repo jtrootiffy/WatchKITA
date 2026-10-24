@@ -7,7 +7,6 @@ function readString(name: string, fallback = ''): string {
   return typeof value === 'string' && value.trim().length > 0 ? value.trim() : fallback
 }
 
-const watchmodeApiKey = readString('WATCHMODE_API_KEY')
 const tmdbApiKey = readString('TMDB_API_KEY')
 const supabaseUrl = readString('SUPABASE_URL').replace(/\/+$/, '')
 const supabaseServiceKey = readString('SUPABASE_SERVICE_KEY')
@@ -21,8 +20,6 @@ const supabaseConfigured =
 export const env = {
   nodeEnv: readString('NODE_ENV', 'development'),
   port: Number.parseInt(readString('PORT', '5000'), 10) || 5000,
-  watchmodeApiKey,
-  watchmodeConfigured: watchmodeApiKey.length > 0,
   tmdbApiKey,
   tmdbConfigured: tmdbApiKey.length > 0,
   tmdbBaseUrl: readString('TMDB_BASE_URL', 'https://api.themoviedb.org/3'),
@@ -49,12 +46,8 @@ export const env = {
   },
 }
 
-if (!env.watchmodeConfigured) {
-  console.warn('[startup] WATCHMODE_API_KEY is not configured. API routes will return 503.')
-}
-
 if (!env.tmdbConfigured) {
-  console.warn('[startup] TMDB_API_KEY is not configured. Title playback endpoints will return 503.')
+  console.warn('[startup] TMDB_API_KEY is not configured. TMDB routes will return 503.')
 }
 
 if (!env.supabaseConfigured) {

@@ -7,12 +7,12 @@ const DAY = 24 * HOUR
 const MAX_PAGES = 40
 
 export const queryKeys = {
-  regions: ['regions'] as const,
   genres: ['genres'] as const,
   sourceReferences: ['source-references'] as const,
+  regions: ['regions'] as const,
   status: ['status'] as const,
-  title: (id: number, region: string) => ['title', id, region] as const,
-  sources: (id: number, region: string) => ['title-sources', id, region] as const,
+  title: (id: number) => ['title', id] as const,
+  sources: (id: number) => ['title-sources', id] as const,
   cast: (id: number) => ['title-cast', id] as const,
   seasons: (id: number) => ['title-seasons', id] as const,
   episodes: (id: number, season: number) => ['title-episodes', id, season] as const,
@@ -24,22 +24,11 @@ export const queryKeys = {
       'titles',
       query.types?.join(',') ?? 'all',
       query.genreIds?.join(',') ?? 'all',
-      query.region ?? 'any',
       query.sortBy ?? 'popularity_desc',
       query.limit ?? 24,
       query.year ?? 'any',
     ] as const,
   posterBatch: (ids: number[]) => ['poster-batch', ids.join(',')] as const,
-}
-
-export function useRegionsQuery() {
-  return useQuery({
-    queryKey: queryKeys.regions,
-    queryFn: () => api.regions(),
-    staleTime: DAY,
-    gcTime: DAY,
-    retry: 1,
-  })
 }
 
 export function useGenresQuery() {
@@ -62,6 +51,16 @@ export function useSourceReferencesQuery() {
   })
 }
 
+export function useRegionsQuery() {
+  return useQuery({
+    queryKey: queryKeys.regions,
+    queryFn: () => api.regions(),
+    staleTime: DAY,
+    gcTime: DAY,
+    retry: 1,
+  })
+}
+
 export function useStatusQuery() {
   return useQuery({
     queryKey: queryKeys.status,
@@ -71,10 +70,10 @@ export function useStatusQuery() {
   })
 }
 
-export function useTitleQuery(id: number | undefined, region: string) {
+export function useTitleQuery(id: number | undefined) {
   return useQuery({
-    queryKey: queryKeys.title(id ?? 0, region),
-    queryFn: ({ signal }) => api.title(id as number, region, signal),
+    queryKey: queryKeys.title(id ?? 0),
+    queryFn: ({ signal }) => api.title(id as number, signal),
     enabled: Boolean(id),
     staleTime: HOUR,
     retry: (attempt, error) =>
@@ -82,10 +81,10 @@ export function useTitleQuery(id: number | undefined, region: string) {
   })
 }
 
-export function useSourcesQuery(id: number | undefined, region: string) {
+export function useSourcesQuery(id: number | undefined) {
   return useQuery({
-    queryKey: queryKeys.sources(id ?? 0, region),
-    queryFn: ({ signal }) => api.sources(id as number, region, signal),
+    queryKey: queryKeys.sources(id ?? 0),
+    queryFn: ({ signal }) => api.sources(id as number, signal),
     enabled: Boolean(id),
     staleTime: 30 * MINUTE,
     retry: 1,
@@ -148,6 +147,16 @@ export function useTmdbSeasonQuery(tmdbId: number | undefined, season: number | 
     queryFn: ({ signal }) => api.tmdb.season(tmdbId as number, season as number, signal),
     enabled: Boolean(tmdbId) && season !== null && enabled,
     staleTime: 12 * HOUR,
+    retry: 1,
+  })
+}
+
+export function useTmdbSearchQuery(query: string, type: 'all' | 'movie' | 'tv', enabled = true) {
+  return useQuery({
+    queryKey: ['tmdb-search', query, type],
+    queryFn: ({ signal }) => api.tmdb.search(query, type, signal),
+    enabled: enabled && query.length >= 2,
+    staleTime: 5 * MINUTE,
     retry: 1,
   })
 }

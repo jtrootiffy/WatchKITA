@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { errorMessage } from '../lib/api'
 import { useGenresQuery, useInfiniteTitlesQuery } from '../lib/queries'
-import { useRegion } from '../context/RegionContext'
 import type { TitleType } from '../types'
 import { Button } from './ui/Button'
 import DiscoveryFilters, {
@@ -28,14 +27,13 @@ interface CatalogBrowserProps {
 const TYPES_BY_FILTER: Record<CatalogTypeFilter, TitleType[]> = {
   all: [],
   movie: ['movie'],
-  tv: ['tv_series', 'tv_miniseries', 'tv_special'],
+  tv: ['tv'],
 }
 
 const VALID_SORTS = new Set(SORT_OPTIONS.map((option) => option.value as string))
 
 export default function CatalogBrowser({ mode, title, description }: CatalogBrowserProps) {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { region, regionName } = useRegion()
   const genresQuery = useGenresQuery()
 
   const typeFromUrl = searchParams.get('type')
@@ -102,7 +100,6 @@ export default function CatalogBrowser({ mode, title, description }: CatalogBrow
   const query = useInfiniteTitlesQuery({
     types: TYPES_BY_FILTER[type],
     genreIds,
-    region,
     sortBy,
     year,
     limit: 24,
@@ -160,7 +157,7 @@ export default function CatalogBrowser({ mode, title, description }: CatalogBrow
         ) : items.length === 0 ? (
           <EmptyState
             title="No titles match these filters"
-            description={`Nothing in the catalog matched this combination for ${regionName}. Try removing a genre or choosing a different year.`}
+            description={`Nothing in the catalog matched this combination. Try removing a genre or choosing a different year.`}
             action={
               <Button variant="secondary" onClick={resetFilters}>
                 Clear filters
@@ -172,8 +169,7 @@ export default function CatalogBrowser({ mode, title, description }: CatalogBrow
             <div className="mb-6 flex flex-wrap items-baseline justify-between gap-2">
               <p className="text-xs text-muted">
                 Showing <span className="text-white">{items.length}</span> of{' '}
-                <span className="text-white">{total.toLocaleString()}</span> titles available in{' '}
-                {regionName}
+                <span className="text-white">{total.toLocaleString()}</span> titles available
               </p>
               {query.isFetching && !query.isFetchingNextPage ? (
                 <span className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted">

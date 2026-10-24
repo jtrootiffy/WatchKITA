@@ -10,7 +10,6 @@ import {
   useSourcesQuery,
   useTitleQuery,
 } from '../lib/queries'
-import { useRegion } from '../context/RegionContext'
 import { useWatchlist } from '../context/WatchlistContext'
 import { useToast } from '../context/ToastContext'
 import CastCrewSection from '../components/CastCrewSection'
@@ -28,14 +27,13 @@ export default function TitleDetails() {
   const id = Number.parseInt(idParam ?? '', 10)
   const validId = Number.isInteger(id) && id > 0 ? id : undefined
 
-  const { region, regionName } = useRegion()
   const { has, toggle } = useWatchlist()
   const { addToast } = useToast()
   const location = useLocation()
   const navigate = useNavigate()
 
-  const titleQuery = useTitleQuery(validId, region)
-  const sourcesQuery = useSourcesQuery(validId, region)
+  const titleQuery = useTitleQuery(validId)
+  const sourcesQuery = useSourcesQuery(validId)
   const castQuery = useCastQuery(validId)
   const details = titleQuery.data
   const isTvTitle = details ? isTv(details.type) : false
@@ -72,7 +70,7 @@ export default function TitleDetails() {
         {isNotFound ? (
           <EmptyState
             title="Title not found"
-            description="Watchmode no longer lists this title in the catalog. It may have been removed or the id may be incorrect."
+            description="This title is not available in the movie database. It may have been removed or the id may be incorrect."
             action={<ButtonLink to="/discover">Browse the catalog</ButtonLink>}
           />
         ) : (
@@ -266,7 +264,6 @@ export default function TitleDetails() {
         <div className="mt-14 space-y-12 pb-16">
           <StreamingProviders
             sources={sourcesQuery.data ?? []}
-            regionName={regionName}
             isLoading={sourcesQuery.isLoading}
             isError={sourcesQuery.isError}
             onRetry={() => void sourcesQuery.refetch()}

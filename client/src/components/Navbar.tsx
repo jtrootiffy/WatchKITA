@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Menu, Search } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import RegionSelector from './RegionSelector'
 import MobileNavigation from './MobileNavigation'
 import { useWatchlist } from '../context/WatchlistContext'
 
@@ -88,7 +87,6 @@ export default function Navbar({ onSearchClick }: NavbarProps) {
             </nav>
 
             <div className="flex items-center gap-2 sm:gap-3">
-              <RegionSelector className="hidden sm:block" />
               <button
                 type="button"
                 onClick={onSearchClick}

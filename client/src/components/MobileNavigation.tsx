@@ -2,7 +2,6 @@ import { useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent } from 'rea
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Search, X } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
-import RegionSelector from './RegionSelector'
 import { EASE_OUT } from '../lib/motion'
 
 interface MobileNavigationProps {
@@ -143,7 +142,6 @@ export default function MobileNavigation({ open, onClose, onSearch }: MobileNavi
 
               <div>
                 <p className="eyebrow mb-3">Where to watch</p>
-                <RegionSelector align="left" />
               </div>
             </div>
           </motion.nav>

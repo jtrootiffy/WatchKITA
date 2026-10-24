@@ -1,10 +1,4 @@
-export type TitleType =
-  | 'movie'
-  | 'tv_series'
-  | 'tv_special'
-  | 'tv_miniseries'
-  | 'tv_movie'
-  | 'short_film'
+export type TitleType = 'movie' | 'tv'
 
 export interface TitleSummary {
   id: number
@@ -84,6 +78,15 @@ export interface EpisodeSummary {
   runtimeMinutes: number | null
   overview: string | null
   thumbnailUrl: string | null
+  sources: EpisodeSource[]
+}
+
+export interface EpisodeSource {
+  sourceId: number
+  name: string
+  type: string
+  region: string
+  webUrl: string | null
 }
 
 export interface Genre {
@@ -129,6 +132,7 @@ export interface SearchResultItem {
   title: string
   year: number | null
   type: TitleType
+  poster: string | null
 }
 
 export interface UpstreamStatus {
@@ -136,10 +140,6 @@ export interface UpstreamStatus {
   reachable: boolean
   cache: string
   supabase: string
-  quota?: number | null
-  quotaUsed?: number | null
-  quotaRemaining?: number | null
-  message?: string
   tmdbConfigured?: boolean
 }
 

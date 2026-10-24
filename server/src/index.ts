@@ -8,7 +8,7 @@ const app = createApp()
 if (process.argv[1]?.includes('index.ts') || process.argv[1]?.includes('index.js')) {
   const server = app.listen(env.port, () => {
     console.log(`[server] WatchKITA API listening on http://localhost:${env.port}`)
-    console.log(`[server] Watchmode key: ${env.watchmodeConfigured ? 'configured' : 'missing'}`)
+    console.log(`[server] TMDB key: ${env.tmdbConfigured ? 'configured' : 'missing'}`)
     console.log(`[server] Cache: ${env.supabaseConfigured ? 'supabase + memory' : 'memory only'}`)
   })
 

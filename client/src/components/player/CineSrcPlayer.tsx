@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Loader2 } from 'lucide-react'
+import { Loader2, SkipForward, Volume2, VolumeX, ChevronRight, ChevronLeft } from 'lucide-react'
 import { buildCineSrcUrl, type CineSrcMediaType } from '@/lib/player'
 import { Button } from '../ui/Button'
 import ErrorState from '../ErrorState'
@@ -25,8 +25,13 @@ type CineSrcEventData = {
   internalNavigation?: boolean
   error?: string
   source?: string
+  skipTime?: number
   [key: string]: unknown
 }
+
+const QUALITIES = ['480', '720', '1080'] as const
+
+type Quality = (typeof QUALITIES)[number]
 
 export default function CineSrcPlayer({
   mediaType,
@@ -45,7 +50,11 @@ export default function CineSrcPlayer({
   const [playerReady, setPlayerReady] = useState(false)
   const [season, setSeason] = useState(initialSeason ?? 1)
   const [episode, setEpisode] = useState(initialEpisode ?? 1)
+  const [isMuted, setIsMuted] = useState(false)
+  const [quality, setQuality] = useState<Quality>('720')
+  const [skipTime, setSkipTime] = useState<number | null>(null)
   const readyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const skipTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const clearReadyTimeout = useCallback(() => {
     if (readyTimeoutRef.current !== null) {
@@ -53,6 +62,25 @@ export default function CineSrcPlayer({
       readyTimeoutRef.current = null
     }
   }, [])
+
+  const clearSkipTimeout = useCallback(() => {
+    if (skipTimeoutRef.current !== null) {
+      clearTimeout(skipTimeoutRef.current)
+      skipTimeoutRef.current = null
+    }
+  }, [])
+
+  const sendCommand = useCallback(
+    (command: string, args: unknown[] = []) => {
+      const iframe = iframeRef.current
+      if (!iframe?.contentWindow) return
+      iframe.contentWindow.postMessage(
+        { type: 'cinesrc:command', command, args },
+        CINE_SRC_ORIGIN,
+      )
+    },
+    [],
+  )
 
   const handleError = useCallback(
     (message: string) => {
@@ -91,6 +119,13 @@ export default function CineSrcPlayer({
           break
         }
 
+        case 'cinesrc:skipintro': {
+          setSkipTime(typeof data.skipTime === 'number' ? data.skipTime : null)
+          clearSkipTimeout()
+          skipTimeoutRef.current = setTimeout(() => setSkipTime(null), 5000)
+          break
+        }
+
         case 'cinesrc:nextepisode': {
           const nextSeason =
             typeof data.season === 'number' && Number.isFinite(data.season) ? data.season : null
@@ -118,7 +153,7 @@ export default function CineSrcPlayer({
         }
       }
     },
-    [clearReadyTimeout, handleError, onReady, onEpisodeChange, onClose],
+    [clearReadyTimeout, clearSkipTimeout, handleError, onReady, onEpisodeChange, onClose],
   )
 
   useEffect(() => {
@@ -137,17 +172,16 @@ export default function CineSrcPlayer({
     season: mediaType === 'tv' ? season : undefined,
     episode: mediaType === 'tv' ? episode : undefined,
     autoplay,
-    muted: false,
+    muted: isMuted,
     color: '#D00000',
     controls: true,
     autonext: mediaType === 'tv',
     autoskip: false,
+    quality,
     back: onClose ? 'close' : undefined,
   })
 
   const handleIframeLoad = () => {
-    // An iframe load event only means the player HTML loaded, not that a video
-    // is playable. Wait for cinesrc:ready before marking the player ready.
     readyTimeoutRef.current = setTimeout(() => {
       if (!playerReady && !playerError) {
         setIsLoading(false)
@@ -164,6 +198,39 @@ export default function CineSrcPlayer({
       iframeRef.current.src = src
     }
   }
+
+  const handleSkipIntro = () => {
+    if (skipTime !== null) {
+      sendCommand('seek', [skipTime])
+    }
+  }
+
+  const handleNextEpisode = () => {
+    if (mediaType !== 'tv') return
+    sendCommand('play')
+    setEpisode((prev) => prev + 1)
+  }
+
+  const handlePreviousEpisode = () => {
+    if (mediaType !== 'tv') return
+    setEpisode((prev) => Math.max(1, prev - 1))
+  }
+
+  const handleToggleMute = () => {
+    setIsMuted((prev) => {
+      sendCommand('setMuted', [!prev])
+      return !prev
+    })
+  }
+
+  const handleQualityChange = (value: string) => {
+    const q = value as Quality
+    if (QUALITIES.includes(q)) {
+      setQuality(q)
+    }
+  }
+
+  const isTv = mediaType === 'tv'
 
   return (
     <section className="watch-player-section bg-bg">
@@ -187,8 +254,8 @@ export default function CineSrcPlayer({
                 height="100%"
                 frameBorder="0"
                 allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                loading="lazy"
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                referrerPolicy="no-referrer-when-downgrade"
                 onLoad={handleIframeLoad}
                 aria-label="CineSrc video player"
                 tabIndex={-1}
@@ -199,9 +266,57 @@ export default function CineSrcPlayer({
                   <p className="text-sm text-muted">Loading player...</p>
                 </div>
               )}
+
+              {skipTime !== null && playerReady && (
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-black/80 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20">
+                  <Button variant="ghost" size="sm" onClick={handleSkipIntro} disabled={skipTime === null}>
+                    <SkipForward size={14} aria-hidden="true" />
+                    Skip intro
+                  </Button>
+                  <p className="text-xs text-white">{skipTime}s</p>
+                </div>
+              )}
+
+              {playerReady && (
+                <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2 bg-black/70 px-3 py-2 rounded-lg backdrop-blur-sm border border-white/20">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleToggleMute}
+                    aria-label={isMuted ? 'Unmute' : 'Mute'}
+                  >
+                    {isMuted ? <VolumeX size={16} aria-hidden="true" /> : <Volume2 size={16} aria-hidden="true" />}
+                  </Button>
+                  <select
+                    value={quality}
+                    onChange={(e) => handleQualityChange(e.target.value)}
+                    className="bg-black/60 text-white text-xs border border-white/20 rounded px-2 py-1 focus:outline-none focus:border-primary"
+                    aria-label="Video quality"
+                  >
+                    {QUALITIES.map((q) => (
+                      <option key={q} value={q}>
+                        {q}p
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </>
           )}
         </div>
+
+        {isTv && playerReady && !playerError && (
+          <div className="mt-4 flex justify-between items-center max-w-5xl mx-auto">
+            <Button variant="ghost" size="sm" onClick={handlePreviousEpisode} disabled={episode <= 1}>
+              <ChevronLeft size={16} aria-hidden="true" />
+              Previous
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleNextEpisode}>
+              Next
+              <ChevronRight size={16} aria-hidden="true" />
+            </Button>
+          </div>
+        )}
 
         {playerError && (
           <div className="mt-6 flex flex-col items-center gap-3 text-center">

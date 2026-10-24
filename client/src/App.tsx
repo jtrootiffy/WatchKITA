@@ -11,6 +11,7 @@ import TVShows from './pages/TVShows'
 import Discover from './pages/Discover'
 import TitleDetails from './pages/TitleDetails'
 import SearchResults from './pages/SearchResults'
+import TmdbSearch from './pages/TmdbSearch'
 import Watchlist from './pages/Watchlist'
 import Watch from './pages/Watch'
 import NotFound from './pages/NotFound'
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/tv-shows" element={<TVShows />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/tmdb-search" element={<TmdbSearch />} />
             <Route path="/title/:id" element={<TitleDetails />} />
             <Route path="/watch/movie/:tmdbId" element={<Watch />} />
             <Route path="/watch/tv/:tmdbId" element={<Watch />} />

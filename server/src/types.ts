@@ -1,17 +1,10 @@
 /**
  * Normalized data model.
- *
- * Watchmode's upstream payloads are intentionally kept out of the client.
+ * TMDB's upstream payloads are intentionally kept out of the client.
  * Every response returned by this server is expressed with the types below.
  */
 
-export type TitleType =
-  | 'movie'
-  | 'tv_series'
-  | 'tv_special'
-  | 'tv_miniseries'
-  | 'tv_movie'
-  | 'short_film'
+export type TitleType = 'movie' | 'tv'
 
 export interface TitleSummary {
   id: number

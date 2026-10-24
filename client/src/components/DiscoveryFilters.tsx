@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { SlidersHorizontal, X } from 'lucide-react'
-import RegionSelector from './RegionSelector'
 import type { Genre } from '../types'
 
 export type CatalogTypeFilter = 'all' | 'movie' | 'tv'
@@ -132,8 +131,6 @@ export default function DiscoveryFilters({
                 ))}
               </select>
             </label>
-
-            <RegionSelector />
           </div>
         </div>
 

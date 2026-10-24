@@ -6,6 +6,7 @@ import type {
   PaginatedTitles,
   PosterInfo,
   Region,
+  SearchResultItem,
   SearchResultsResponse,
   SeasonSummary,
   SourceReference,
@@ -94,7 +95,6 @@ async function request<T>(
 export interface TitleQuery {
   types?: TitleType[]
   genreIds?: number[]
-  region?: string | null
   sortBy?: string
   page?: number
   limit?: number
@@ -106,11 +106,11 @@ export const api = {
 
   status: () => request<UpstreamStatus>('/status'),
 
-  regions: () => request<Region[]>('/regions'),
-
   genres: () => request<Genre[]>('/genres'),
 
   sourceReferences: () => request<SourceReference[]>('/sources'),
+
+  regions: () => request<Region[]>('/regions'),
 
   titles: (query: TitleQuery, signal?: AbortSignal) =>
     request<PaginatedTitles>('/titles', {
@@ -118,7 +118,6 @@ export const api = {
       params: {
         types: query.types?.length ? query.types.join(',') : undefined,
         genres: query.genreIds?.length ? query.genreIds.join(',') : undefined,
-        region: query.region ?? undefined,
         sort_by: query.sortBy,
         page: query.page,
         limit: query.limit,
@@ -132,11 +131,11 @@ export const api = {
       params: { ids: ids.join(',') },
     }),
 
-  title: (id: number, region: string, signal?: AbortSignal) =>
-    request<TitleDetails>(`/titles/${id}`, { params: { region }, signal }),
+  title: (id: number, signal?: AbortSignal) =>
+    request<TitleDetails>(`/titles/${id}`, { signal }),
 
-  sources: (id: number, region: string, signal?: AbortSignal) =>
-    request<ViewingSource[]>(`/titles/${id}/sources`, { params: { region }, signal }),
+  sources: (id: number, signal?: AbortSignal) =>
+    request<ViewingSource[]>(`/titles/${id}/sources`, { signal }),
 
   tmdb: {
     movie: (tmdbId: number, signal?: AbortSignal) =>
@@ -145,6 +144,11 @@ export const api = {
       request<TmdbSeriesDetails>(`/tmdb/tv/${tmdbId}`, { signal }),
     season: (tmdbId: number, season: number, signal?: AbortSignal) =>
       request<TmdbEpisodeDetails[]>(`/tmdb/tv/${tmdbId}/seasons/${season}`, { signal }),
+    search: (query: string, type: 'all' | 'movie' | 'tv', signal?: AbortSignal) =>
+      request<{ results: SearchResultItem[]; total: number }>('/tmdb/search', {
+        params: { q: query, type },
+        signal,
+      }),
   },
 
   cast: (id: number, signal?: AbortSignal) =>

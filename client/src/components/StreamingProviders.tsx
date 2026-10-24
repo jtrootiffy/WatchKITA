@@ -1,12 +1,10 @@
 import { ExternalLink } from 'lucide-react'
 import { groupSources } from '../lib/format'
-import { useSourceReferencesQuery } from '../lib/queries'
 import type { ViewingSource } from '../types'
 import ErrorState from './ErrorState'
 
 interface StreamingProvidersProps {
   sources: ViewingSource[]
-  regionName: string
   isLoading: boolean
   isError: boolean
   onRetry?: () => void
@@ -14,15 +12,10 @@ interface StreamingProvidersProps {
 
 export default function StreamingProviders({
   sources,
-  regionName,
   isLoading,
   isError,
   onRetry,
 }: StreamingProvidersProps) {
-  const references = useSourceReferencesQuery()
-  const logoFor = (sourceId: number) =>
-    references.data?.find((reference) => reference.id === sourceId)?.logo ?? null
-
   const groups = groupSources(sources)
 
   return (
@@ -32,7 +25,6 @@ export default function StreamingProviders({
           <p className="eyebrow">Availability</p>
           <h2 className="mt-3 font-serif text-2xl text-white sm:text-3xl">Where to watch</h2>
         </div>
-        <p className="text-[11px] uppercase tracking-widest text-muted">Region {regionName}</p>
       </div>
 
       {isLoading ? (
@@ -53,11 +45,10 @@ export default function StreamingProviders({
       ) : sources.length === 0 ? (
         <div className="mt-6 border border-line p-6">
           <p className="text-sm text-white">
-            No viewing options were found for {regionName}.
+            No viewing options were found for this title.
           </p>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-            Availability data can be incomplete or change over time. Try another region from the
-            region selector, or check back later.
+            Availability data can be incomplete or change over time. Check back later.
           </p>
         </div>
       ) : (
@@ -72,7 +63,6 @@ export default function StreamingProviders({
 
               <ul className="grid gap-2 sm:grid-cols-2">
                 {group.sources.map((source) => {
-                  const logo = logoFor(source.sourceId)
                   return (
                     <li key={`${source.sourceId}-${source.type}-${source.name}`}>
                       {source.webUrl ? (
@@ -83,24 +73,15 @@ export default function StreamingProviders({
                           className="group flex h-full items-center justify-between gap-4 border border-line p-3.5 transition-colors hover:border-muted hover:bg-surface"
                         >
                           <span className="flex min-w-0 items-center gap-3">
-                            {logo ? (
-                              <img
-                                src={logo}
-                                alt=""
-                                loading="lazy"
-                                className="h-8 w-8 shrink-0 object-contain"
-                              />
-                            ) : (
-                              <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-surface text-[10px] uppercase text-muted">
-                                {source.name.slice(0, 2)}
-                              </span>
-                            )}
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-surface text-[10px] uppercase text-muted">
+                              {source.name.slice(0, 2)}
+                            </span>
                             <span className="min-w-0">
                               <span className="block truncate text-sm text-white">
                                 {source.name}
                               </span>
                               <span className="mt-0.5 block text-[10px] uppercase tracking-widest text-muted">
-                                {[source.format, source.region].filter(Boolean).join(' · ')}
+                                {source.format ?? 'Provider'}
                               </span>
                             </span>
                           </span>
@@ -127,7 +108,7 @@ export default function StreamingProviders({
           <p className="max-w-2xl text-xs leading-relaxed text-muted/70">
             Links open the provider&apos;s own site. WatchKITA does not stream video, and a
             subscription, rental payment, or regional restriction may apply. Availability data is
-            supplied by Watchmode and can change.
+            supplied by TMDB and can change.
           </p>
         </div>
       )}

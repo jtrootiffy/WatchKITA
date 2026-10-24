@@ -12,6 +12,7 @@ export interface CineSrcEmbedConfig {
   autonext?: boolean
   autoskip?: boolean
   back?: string
+  quality?: string
 }
 
 const CINE_SRC_BASE = 'https://cinesrc.st'

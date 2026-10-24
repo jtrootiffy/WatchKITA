@@ -15,14 +15,7 @@ import type { TitleType, WatchlistItem } from '../types'
 const STORAGE_KEY = 'watchkita.watchlist.v2'
 const DEVICE_KEY = 'watchkita.device'
 const MAX_ITEMS = 200
-const VALID_TYPES: TitleType[] = [
-  'movie',
-  'tv_series',
-  'tv_special',
-  'tv_miniseries',
-  'tv_movie',
-  'short_film',
-]
+const VALID_TYPES: TitleType[] = ['movie', 'tv']
 
 interface WatchlistContextValue {
   items: WatchlistItem[]

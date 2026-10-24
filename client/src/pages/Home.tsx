@@ -3,44 +3,37 @@ import { useQueries } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import FeaturedHero from '../components/FeaturedHero'
 import PosterRail from '../components/PosterRail'
-import RegionSelector from '../components/RegionSelector'
 import { api } from '../lib/api'
 import { useGenresQuery, useTitlesQuery, queryKeys } from '../lib/queries'
-import { useRegion } from '../context/RegionContext'
 import type { TitleDetails } from '../types'
 
 const CURRENT_YEAR = new Date().getFullYear()
 
 export default function Home() {
-  const { region, regionName } = useRegion()
   const [genreId, setGenreId] = useState<number | null>(null)
 
   const trending = useTitlesQuery({
     limit: 18,
     sortBy: 'popularity_desc',
-    region,
   })
 
   const popularMovies = useTitlesQuery({
     types: ['movie'],
     limit: 14,
     sortBy: 'popularity_desc',
-    region,
   })
 
   const popularTv = useTitlesQuery({
-    types: ['tv_series', 'tv_miniseries'],
+    types: ['tv'],
     limit: 14,
     sortBy: 'popularity_desc',
-    region,
   })
 
   const recentlyReleased = useTitlesQuery({
-    types: ['movie', 'tv_series'],
+    types: ['movie', 'tv'],
     limit: 14,
     sortBy: 'release_date_desc',
     year: CURRENT_YEAR,
-    region,
   })
 
   const genres = useGenresQuery()
@@ -57,7 +50,6 @@ export default function Home() {
       genreIds: genreId ? [genreId] : [],
       limit: 14,
       sortBy: 'popularity_desc',
-      region,
     },
     genreId !== null,
   )
@@ -69,8 +61,8 @@ export default function Home() {
 
   const heroQueries = useQueries({
     queries: heroIds.map((id) => ({
-      queryKey: queryKeys.title(id, region),
-      queryFn: ({ signal }: { signal: AbortSignal }) => api.title(id, region, signal),
+      queryKey: queryKeys.title(id),
+      queryFn: ({ signal }: { signal: AbortSignal }) => api.title(id, signal),
       staleTime: 60 * 60 * 1000,
       enabled: Boolean(id),
       retry: 1,
@@ -94,17 +86,6 @@ export default function Home() {
         isLoading={heroLoading}
         onRetry={() => void trending.refetch()}
       />
-
-      <div className="border-b border-line">
-        <div className="shell flex items-center justify-between gap-4 py-3">
-          <p className="text-[10px] uppercase tracking-widest text-muted">
-            Availability for <span className="text-white">{regionName}</span>
-          </p>
-          <div className="sm:hidden">
-            <RegionSelector />
-          </div>
-        </div>
-      </div>
 
       <PosterRail
         title="Trending & popular"
@@ -146,7 +127,7 @@ export default function Home() {
         title="Top picks by genre"
         description={
           pickedGenre
-            ? `Popular ${pickedGenre.name.toLowerCase()} titles for ${regionName}.`
+            ? `Popular ${pickedGenre.name.toLowerCase()} titles.`
             : 'Popular titles in a genre of your choosing.'
         }
         items={genrePicks.data?.titles ?? []}
@@ -184,8 +165,7 @@ export default function Home() {
               Build a shortlist you will actually watch.
             </h2>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-muted">
-              Save titles to your watchlist while you browse, then check where each one is
-              available in {regionName}.
+              Save titles to your watchlist while you browse.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
