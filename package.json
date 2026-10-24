@@ -1,0 +1,28 @@
+{
+  "name": "watchkita",
+  "version": "2.0.0",
+  "description": "WatchKITA - cinematic movie and TV discovery powered by the Watchmode API",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,client -c yellow,red \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "npm run build --workspace=client",
+    "build:server": "npm run build --workspace=server",
+    "start": "npm run start --workspace=server",
+    "typecheck": "npm run typecheck --workspace=server && npm run typecheck --workspace=client",
+    "vercel-build": "npm run build:client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
