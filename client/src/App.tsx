@@ -12,6 +12,7 @@ import Discover from './pages/Discover'
 import TitleDetails from './pages/TitleDetails'
 import SearchResults from './pages/SearchResults'
 import Watchlist from './pages/Watchlist'
+import Watch from './pages/Watch'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -45,6 +46,8 @@ export default function App() {
             <Route path="/discover" element={<Discover />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/title/:id" element={<TitleDetails />} />
+            <Route path="/watch/movie/:tmdbId" element={<Watch />} />
+            <Route path="/watch/tv/:tmdbId" element={<Watch />} />
             <Route path="/watchlist" element={<Watchlist />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

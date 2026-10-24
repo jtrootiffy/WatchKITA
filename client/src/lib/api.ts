@@ -11,6 +11,9 @@ import type {
   SourceReference,
   TitleDetails,
   TitleType,
+  TmdbEpisodeDetails,
+  TmdbMovieDetails,
+  TmdbSeriesDetails,
   UpstreamStatus,
   ViewingSource,
   WatchlistItem,
@@ -134,6 +137,15 @@ export const api = {
 
   sources: (id: number, region: string, signal?: AbortSignal) =>
     request<ViewingSource[]>(`/titles/${id}/sources`, { params: { region }, signal }),
+
+  tmdb: {
+    movie: (tmdbId: number, signal?: AbortSignal) =>
+      request<TmdbMovieDetails>(`/tmdb/movies/${tmdbId}`, { signal }),
+    series: (tmdbId: number, signal?: AbortSignal) =>
+      request<TmdbSeriesDetails>(`/tmdb/tv/${tmdbId}`, { signal }),
+    season: (tmdbId: number, season: number, signal?: AbortSignal) =>
+      request<TmdbEpisodeDetails[]>(`/tmdb/tv/${tmdbId}/seasons/${season}`, { signal }),
+  },
 
   cast: (id: number, signal?: AbortSignal) =>
     request<CastCrew>(`/titles/${id}/cast-crew`, { signal }),

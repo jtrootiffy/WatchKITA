@@ -140,6 +140,49 @@ export interface UpstreamStatus {
   quotaUsed?: number | null
   quotaRemaining?: number | null
   message?: string
+  tmdbConfigured?: boolean
+}
+
+export interface TmdbMovieDetails {
+  tmdbId: number
+  mediaType: 'movie'
+  title: string
+  year: number | null
+  overview: string | null
+  runtimeMinutes: number | null
+  poster: string | null
+  backdrop: string | null
+  genres: string[]
+}
+
+export interface TmdbSeasonDetails {
+  seasonNumber: number
+  name: string | null
+  episodeCount: number
+  airDate: string | null
+  overview: string | null
+}
+
+export interface TmdbEpisodeDetails {
+  seasonNumber: number
+  episodeNumber: number
+  name: string
+  airDate: string | null
+  runtimeMinutes: number | null
+  overview: string | null
+}
+
+export interface TmdbSeriesDetails {
+  tmdbId: number
+  mediaType: 'tv'
+  title: string
+  year: number | null
+  overview: string | null
+  runtimeMinutes: number | null
+  poster: string | null
+  backdrop: string | null
+  genres: string[]
+  seasons: TmdbSeasonDetails[]
 }
 
 export interface WatchlistItem {

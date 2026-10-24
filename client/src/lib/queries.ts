@@ -16,6 +16,9 @@ export const queryKeys = {
   cast: (id: number) => ['title-cast', id] as const,
   seasons: (id: number) => ['title-seasons', id] as const,
   episodes: (id: number, season: number) => ['title-episodes', id, season] as const,
+  tmdbMovie: (tmdbId: number) => ['tmdb', 'movie', tmdbId] as const,
+  tmdbSeries: (tmdbId: number) => ['tmdb', 'series', tmdbId] as const,
+  tmdbSeason: (tmdbId: number, season: number) => ['tmdb', 'season', tmdbId, season] as const,
   titles: (query: TitleQuery) =>
     [
       'titles',
@@ -114,6 +117,36 @@ export function useEpisodesQuery(id: number | undefined, season: number | null) 
     queryKey: queryKeys.episodes(id ?? 0, season ?? 0),
     queryFn: ({ signal }) => api.episodes(id as number, season as number, signal),
     enabled: Boolean(id) && season !== null,
+    staleTime: 12 * HOUR,
+    retry: 1,
+  })
+}
+
+export function useTmdbMovieQuery(tmdbId: number | undefined, enabled: boolean) {
+  return useQuery({
+    queryKey: queryKeys.tmdbMovie(tmdbId ?? 0),
+    queryFn: ({ signal }) => api.tmdb.movie(tmdbId as number, signal),
+    enabled: Boolean(tmdbId) && enabled,
+    staleTime: DAY,
+    retry: 1,
+  })
+}
+
+export function useTmdbSeriesQuery(tmdbId: number | undefined, enabled: boolean) {
+  return useQuery({
+    queryKey: queryKeys.tmdbSeries(tmdbId ?? 0),
+    queryFn: ({ signal }) => api.tmdb.series(tmdbId as number, signal),
+    enabled: Boolean(tmdbId) && enabled,
+    staleTime: DAY,
+    retry: 1,
+  })
+}
+
+export function useTmdbSeasonQuery(tmdbId: number | undefined, season: number | null, enabled: boolean) {
+  return useQuery({
+    queryKey: queryKeys.tmdbSeason(tmdbId ?? 0, season ?? 0),
+    queryFn: ({ signal }) => api.tmdb.season(tmdbId as number, season as number, signal),
+    enabled: Boolean(tmdbId) && season !== null && enabled,
     staleTime: 12 * HOUR,
     retry: 1,
   })

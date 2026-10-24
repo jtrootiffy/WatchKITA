@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Check, ExternalLink, Play, Plus, Share2 } from 'lucide-react'
 import { ApiError, errorMessage } from '../lib/api'
+import { buildWatchMovieUrl, buildWatchTvUrl } from '@/lib/player'
 import { criticScoreLabel, isTv, runtimeLabel, typeLabel, userRatingLabel } from '../lib/format'
 import {
   useCastQuery,
@@ -31,6 +32,7 @@ export default function TitleDetails() {
   const { has, toggle } = useWatchlist()
   const { addToast } = useToast()
   const location = useLocation()
+  const navigate = useNavigate()
 
   const titleQuery = useTitleQuery(validId, region)
   const sourcesQuery = useSourcesQuery(validId, region)
@@ -231,6 +233,26 @@ export default function TitleDetails() {
                   Trailer
                   <ExternalLink size={12} aria-hidden="true" />
                 </ButtonAnchor>
+              ) : null}
+
+              {details.tmdbId ? (
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    const tmdbId = details.tmdbId!
+                    const back = `/title/${details.id}`
+                    const url =
+                      details.type === 'movie'
+                        ? `${buildWatchMovieUrl(tmdbId)}?back=${encodeURIComponent(back)}&title=${encodeURIComponent(details.title)}&year=${details.year ?? ''}&poster=${encodeURIComponent(details.poster ?? '')}&type=${details.type}`
+                        : `${buildWatchTvUrl(tmdbId, 1, 1)}?back=${encodeURIComponent(back)}&title=${encodeURIComponent(details.title)}&year=${details.year ?? ''}&poster=${encodeURIComponent(details.poster ?? '')}&type=${details.type}`
+                    navigate(url)
+                  }}
+                  disabled={!details.tmdbId}
+                >
+                  <Play size={15} aria-hidden="true" />
+                  {isTv(details.type) ? 'Play Episode 1' : 'Watch Now'}
+                  <ExternalLink size={12} aria-hidden="true" />
+                </Button>
               ) : null}
 
               <Button variant="ghost" onClick={() => void handleShare()}>

@@ -14,6 +14,7 @@ import regionsRoutes from './routes/regions.js'
 import searchRoutes from './routes/search.js'
 import sourcesRoutes from './routes/sources.js'
 import statusRoutes from './routes/status.js'
+import tmdbRoutes from './routes/tmdb.js'
 import titlesRoutes from './routes/titles.js'
 import watchlistRoutes from './routes/watchlist.js'
 
@@ -85,6 +86,7 @@ export function createApp() {
   app.use('/api/titles', titlesRoutes)
   app.use('/api/genres', genresRoutes)
   app.use('/api/sources', sourcesRoutes)
+  app.use('/api/tmdb', tmdbRoutes)
   app.use('/api/regions', regionsRoutes)
   app.use('/api/watchlist', watchlistRoutes)
 

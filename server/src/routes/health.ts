@@ -6,8 +6,9 @@ const router = Router()
 
 router.get('/', (_req, res) => {
   res.json({
-    status: env.watchmodeConfigured ? 'ok' : 'degraded',
+    status: env.watchmodeConfigured && env.tmdbConfigured ? 'ok' : 'degraded',
     watchmodeConfigured: env.watchmodeConfigured,
+    tmdbConfigured: env.tmdbConfigured,
     cache: cacheMode(),
     timestamp: new Date().toISOString(),
   })

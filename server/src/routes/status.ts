@@ -8,7 +8,8 @@ const router = Router()
 
 router.get('/', async (_req, res) => {
   const base = {
-    configured: env.watchmodeConfigured,
+    watchmode: env.watchmodeConfigured,
+    tmdb: env.tmdbConfigured,
     cache: cacheMode(),
     supabase: env.supabaseConfigured ? 'configured' : 'not_configured',
   }
