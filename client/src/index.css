@@ -65,6 +65,16 @@
     @apply text-[10px] font-medium uppercase tracking-editorial text-muted;
   }
 
+  /* The player frame is aspect-video + max-w-5xl on the page, but should fill
+     the screen once the F key or the fullscreen button promotes it. */
+  .watch-player-frame:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    aspect-ratio: auto;
+    border-radius: 0;
+  }
+
   .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;

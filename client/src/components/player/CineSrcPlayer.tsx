@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Loader2, SkipForward, Volume2, VolumeX, ChevronRight, ChevronLeft } from 'lucide-react'
+import {
+  Loader2,
+  SkipForward,
+  Volume2,
+  VolumeX,
+  ChevronRight,
+  ChevronLeft,
+  Maximize,
+  Minimize,
+} from 'lucide-react'
 import { buildCineSrcUrl, type CineSrcMediaType } from '@/lib/player'
 import { Button } from '../ui/Button'
 import ErrorState from '../ErrorState'
@@ -26,6 +35,12 @@ type CineSrcEventData = {
   error?: string
   source?: string
   skipTime?: number
+  currentTime?: number
+  duration?: number
+  volume?: number
+  muted?: boolean
+  command?: string
+  result?: number | boolean
   [key: string]: unknown
 }
 
@@ -45,6 +60,7 @@ export default function CineSrcPlayer({
   onClose,
 }: CineSrcPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
+  const frameRef = useRef<HTMLDivElement | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [playerError, setPlayerError] = useState<string | null>(null)
   const [playerReady, setPlayerReady] = useState(false)
@@ -53,6 +69,11 @@ export default function CineSrcPlayer({
   const [isMuted, setIsMuted] = useState(false)
   const [quality, setQuality] = useState<Quality>('720')
   const [skipTime, setSkipTime] = useState<number | null>(null)
+  const [isPaused, setIsPaused] = useState(false)
+  const [volume, setVolume] = useState(1)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const readyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const skipTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -105,7 +126,69 @@ export default function CineSrcPlayer({
           setIsLoading(false)
           setPlayerError(null)
           setPlayerReady(true)
+          // Sync the control bar with the player's current state.
+          sendCommand('getPaused')
+          sendCommand('getVolume')
+          sendCommand('getMuted')
+          sendCommand('getCurrentTime')
+          sendCommand('getDuration')
           onReady?.()
+          break
+        }
+
+        case 'cinesrc:play': {
+          setIsPaused(false)
+          break
+        }
+
+        case 'cinesrc:pause': {
+          setIsPaused(true)
+          break
+        }
+
+        case 'cinesrc:timeupdate':
+        case 'cinesrc:seeking':
+        case 'cinesrc:seeked': {
+          if (typeof data.currentTime === 'number' && Number.isFinite(data.currentTime)) {
+            setCurrentTime(data.currentTime)
+          }
+          if (typeof data.duration === 'number' && data.duration > 0) {
+            setDuration(data.duration)
+          }
+          break
+        }
+
+        case 'cinesrc:loadedmetadata': {
+          if (typeof data.duration === 'number' && data.duration > 0) {
+            setDuration(data.duration)
+          }
+          break
+        }
+
+        case 'cinesrc:volumechange': {
+          if (typeof data.volume === 'number' && Number.isFinite(data.volume)) {
+            setVolume(Math.min(1, Math.max(0, data.volume)))
+          }
+          if (typeof data.muted === 'boolean') setIsMuted(data.muted)
+          break
+        }
+
+        case 'cinesrc:response': {
+          if (data.command === 'getPaused' && typeof data.result === 'boolean') {
+            setIsPaused(data.result)
+          }
+          if (data.command === 'getVolume' && typeof data.result === 'number') {
+            setVolume(Math.min(1, Math.max(0, data.result)))
+          }
+          if (data.command === 'getMuted' && typeof data.result === 'boolean') {
+            setIsMuted(data.result)
+          }
+          if (data.command === 'getCurrentTime' && typeof data.result === 'number') {
+            setCurrentTime(data.result)
+          }
+          if (data.command === 'getDuration' && typeof data.result === 'number' && data.result > 0) {
+            setDuration(data.result)
+          }
           break
         }
 
@@ -153,7 +236,7 @@ export default function CineSrcPlayer({
         }
       }
     },
-    [clearReadyTimeout, clearSkipTimeout, handleError, onReady, onEpisodeChange, onClose],
+    [clearReadyTimeout, clearSkipTimeout, handleError, sendCommand, onReady, onEpisodeChange, onClose],
   )
 
   useEffect(() => {
@@ -172,7 +255,8 @@ export default function CineSrcPlayer({
     season: mediaType === 'tv' ? season : undefined,
     episode: mediaType === 'tv' ? episode : undefined,
     autoplay,
-    muted: isMuted,
+    // Mute and volume are driven through the player API below; keeping them out
+    // of the embed URL avoids reloading the iframe on every volume change.
     color: '#D00000',
     controls: true,
     autonext: mediaType === 'tv',
@@ -216,26 +300,130 @@ export default function CineSrcPlayer({
     setEpisode((prev) => Math.max(1, prev - 1))
   }
 
-  const handleToggleMute = () => {
-    setIsMuted((prev) => {
-      sendCommand('setMuted', [!prev])
-      return !prev
-    })
-  }
+  const handleToggleMute = useCallback(() => {
+    const next = !isMuted
+    setIsMuted(next)
+    sendCommand('setMuted', [next])
+  }, [isMuted, sendCommand])
 
-  const handleQualityChange = (value: string) => {
-    const q = value as Quality
-    if (QUALITIES.includes(q)) {
-      setQuality(q)
+  const handleVolumeChange = useCallback(
+    (next: number) => {
+      const clamped = Math.min(1, Math.max(0, Number.isFinite(next) ? next : 0))
+      setVolume(clamped)
+      sendCommand('setVolume', [clamped])
+      if (clamped > 0 && isMuted) {
+        setIsMuted(false)
+        sendCommand('setMuted', [false])
+      }
+    },
+    [isMuted, sendCommand],
+  )
+
+  const handleTogglePlay = useCallback(() => {
+    if (isPaused) sendCommand('play')
+    else sendCommand('pause')
+  }, [isPaused, sendCommand])
+
+  const handleSeekBy = useCallback(
+    (delta: number) => {
+      const upper = duration > 0 ? duration : Number.POSITIVE_INFINITY
+      const target = Math.min(upper, Math.max(0, currentTime + delta))
+      setCurrentTime(target)
+      sendCommand('seek', [target])
+    },
+    [currentTime, duration, sendCommand],
+  )
+
+  const handleToggleFullscreen = useCallback(() => {
+    if (typeof document === 'undefined') return
+    if (document.fullscreenElement) {
+      void document.exitFullscreen?.()
+      return
     }
-  }
+    const frame = frameRef.current
+    if (!frame?.requestFullscreen) return
+    void frame.requestFullscreen().catch(() => {})
+  }, [])
+
+  const handleQualityChange = useCallback(
+    (value: string) => {
+      const q = value as Quality
+      if (!QUALITIES.includes(q) || q === quality) return
+      // Quality is an embed-URL preference, so switching it reloads the player.
+      setQuality(q)
+      setPlayerReady(false)
+      setIsLoading(true)
+    },
+    [quality],
+  )
+
+  useEffect(() => {
+    const handleFullscreenChange = () => setIsFullscreen(Boolean(document.fullscreenElement))
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  }, [])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return
+
+      const target = event.target as HTMLElement | null
+      const tag = target?.tagName
+      // Never steal keys from form fields, or from a focused button/link.
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable) return
+      if ((tag === 'BUTTON' || tag === 'A') && (event.key === ' ' || event.key === 'Enter')) return
+
+      switch (event.key) {
+        case ' ':
+        case 'Spacebar': {
+          event.preventDefault()
+          handleTogglePlay()
+          break
+        }
+        case 'f':
+        case 'F': {
+          event.preventDefault()
+          handleToggleFullscreen()
+          break
+        }
+        case 'ArrowUp': {
+          event.preventDefault()
+          handleVolumeChange(volume + 0.1)
+          break
+        }
+        case 'ArrowDown': {
+          event.preventDefault()
+          handleVolumeChange(volume - 0.1)
+          break
+        }
+        case 'ArrowRight': {
+          event.preventDefault()
+          handleSeekBy(10)
+          break
+        }
+        case 'ArrowLeft': {
+          event.preventDefault()
+          handleSeekBy(-10)
+          break
+        }
+        default:
+          break
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleTogglePlay, handleToggleFullscreen, handleVolumeChange, handleSeekBy, volume])
 
   const isTv = mediaType === 'tv'
 
   return (
     <section className="watch-player-section bg-bg">
       <div className="shell pt-6 pb-16 lg:pt-10 lg:pb-20">
-        <div className="relative aspect-video w-full max-w-5xl mx-auto overflow-hidden bg-black rounded-xl shadow-2xl ring-1 ring-line/60">
+        <div
+          ref={frameRef}
+          className="watch-player-frame relative aspect-video w-full max-w-5xl mx-auto overflow-hidden bg-black rounded-xl shadow-2xl ring-1 ring-line/60"
+        >
           {playerError ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black text-white p-8">
               <ErrorState
@@ -277,45 +465,93 @@ export default function CineSrcPlayer({
                 </div>
               )}
 
-              {playerReady && (
-                <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2 bg-black/70 px-3 py-2 rounded-lg backdrop-blur-sm border border-white/20">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleToggleMute}
-                    aria-label={isMuted ? 'Unmute' : 'Mute'}
-                  >
-                    {isMuted ? <VolumeX size={16} aria-hidden="true" /> : <Volume2 size={16} aria-hidden="true" />}
-                  </Button>
-                  <select
-                    value={quality}
-                    onChange={(e) => handleQualityChange(e.target.value)}
-                    className="bg-black/60 text-white text-xs border border-white/20 rounded px-2 py-1 focus:outline-none focus:border-primary"
-                    aria-label="Video quality"
-                  >
-                    {QUALITIES.map((q) => (
-                      <option key={q} value={q}>
-                        {q}p
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
             </>
           )}
         </div>
 
-        {isTv && playerReady && !playerError && (
-          <div className="mt-4 flex justify-between items-center max-w-5xl mx-auto">
-            <Button variant="ghost" size="sm" onClick={handlePreviousEpisode} disabled={episode <= 1}>
-              <ChevronLeft size={16} aria-hidden="true" />
-              Previous
-            </Button>
-            <Button variant="ghost" size="sm" onClick={handleNextEpisode}>
-              Next
-              <ChevronRight size={16} aria-hidden="true" />
-            </Button>
-          </div>
+        {!playerError && (
+          <>
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 max-w-5xl mx-auto">
+              <div className="flex items-center gap-2">
+                {isTv ? (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handlePreviousEpisode}
+                      disabled={episode <= 1}
+                    >
+                      <ChevronLeft size={16} aria-hidden="true" />
+                      Previous
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={handleNextEpisode}>
+                      Next
+                      <ChevronRight size={16} aria-hidden="true" />
+                    </Button>
+                  </>
+                ) : null}
+              </div>
+
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleToggleMute}
+                  aria-label={isMuted ? 'Unmute' : 'Mute'}
+                >
+                  {isMuted || volume === 0 ? (
+                    <VolumeX size={16} aria-hidden="true" />
+                  ) : (
+                    <Volume2 size={16} aria-hidden="true" />
+                  )}
+                </Button>
+
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.05}
+                  value={isMuted ? 0 : volume}
+                  onChange={(event) => handleVolumeChange(Number(event.target.value))}
+                  aria-label="Volume"
+                  className="h-1 w-20 cursor-pointer accent-primary sm:w-28"
+                />
+                <span className="w-9 text-right text-[11px] tabular-nums text-muted">
+                  {Math.round((isMuted ? 0 : volume) * 100)}%
+                </span>
+
+                <select
+                  value={quality}
+                  onChange={(event) => handleQualityChange(event.target.value)}
+                  aria-label="Video quality"
+                  className="h-9 border border-line bg-transparent px-2 text-xs text-white focus:border-muted focus:outline-none"
+                >
+                  {QUALITIES.map((q) => (
+                    <option key={q} value={q} className="bg-bg">
+                      {q}p
+                    </option>
+                  ))}
+                </select>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleToggleFullscreen}
+                  aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+                >
+                  {isFullscreen ? (
+                    <Minimize size={16} aria-hidden="true" />
+                  ) : (
+                    <Maximize size={16} aria-hidden="true" />
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <p className="mt-2 max-w-5xl mx-auto text-[11px] text-muted/70">
+              Space play/pause · F fullscreen · ←/→ 10s · ↑/↓ volume
+            </p>
+          </>
         )}
 
         {playerError && (

@@ -28,10 +28,13 @@ export function buildCineSrcUrl(config: CineSrcEmbedConfig): string {
 
   if (params.autoplay !== undefined) url.searchParams.set('autoplay', String(params.autoplay))
   if (params.muted !== undefined) url.searchParams.set('muted', String(params.muted))
-  if (params.color) url.searchParams.set('color', params.color.replace(/^#/, '%23'))
+  // URLSearchParams already encodes '#' as %23; encoding it twice yields
+  // a literal "%2523" color the player cannot parse.
+  if (params.color) url.searchParams.set('color', params.color)
   if (params.controls !== undefined) url.searchParams.set('controls', String(params.controls))
   if (params.autonext !== undefined) url.searchParams.set('autonext', String(params.autonext))
   if (params.autoskip !== undefined) url.searchParams.set('autoskip', String(params.autoskip))
+  if (params.quality) url.searchParams.set('quality', params.quality)
   if (params.back) url.searchParams.set('back', params.back)
 
   if (mediaType === 'tv') {
