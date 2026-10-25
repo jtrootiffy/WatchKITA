@@ -46,7 +46,7 @@ export default function WatchlistGrid({ items, view, onRemove }: WatchlistGridPr
       {items.map((item) => (
         <li key={item.titleId} className="flex items-center gap-4 py-4">
           <Link
-            to={`/title/${item.titleId}`}
+            to={`/title/${item.titleId}?type=${item.type}`}
             className="h-[72px] w-12 shrink-0 overflow-hidden"
             tabIndex={-1}
             aria-hidden="true"
@@ -63,7 +63,7 @@ export default function WatchlistGrid({ items, view, onRemove }: WatchlistGridPr
 
           <div className="min-w-0 flex-1">
             <Link
-              to={`/title/${item.titleId}`}
+              to={`/title/${item.titleId}?type=${item.type}`}
               className="block truncate text-sm font-medium text-white transition-colors hover:text-white/80"
             >
               {item.title}

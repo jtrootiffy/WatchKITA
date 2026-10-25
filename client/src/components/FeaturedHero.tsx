@@ -198,7 +198,7 @@ export default function FeaturedHero({ slides, isLoading, onRetry }: FeaturedHer
             ) : null}
 
             <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3">
-              <ButtonLink to={`/title/${slide.id}`} size="lg" variant="primary">
+              <ButtonLink to={`/title/${slide.id}?type=${slide.type}`} size="lg" variant="primary">
                 <Info size={16} aria-hidden="true" />
                 Explore title
               </ButtonLink>

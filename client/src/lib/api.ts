@@ -125,14 +125,19 @@ export const api = {
       },
     }),
 
-  posters: (ids: number[], signal?: AbortSignal) =>
+  posters: (ids: number[], types?: Array<TitleType | null>, signal?: AbortSignal) =>
     request<{ posters: PosterInfo[] }>('/titles/posters', {
       signal,
-      params: { ids: ids.join(',') },
+      params: {
+        ids: ids.join(','),
+        // Parallel to `ids`; empty entries mean "type unknown".
+        types: types?.length ? types.map((type) => type ?? '').join(',') : undefined,
+      },
     }),
 
-  title: (id: number, signal?: AbortSignal) =>
-    request<TitleDetails>(`/titles/${id}`, { signal }),
+  // Movie and TV ids overlap on TMDB, so the known type is always forwarded.
+  title: (id: number, type?: TitleType | null, signal?: AbortSignal) =>
+    request<TitleDetails>(`/titles/${id}`, { params: { type }, signal }),
 
   sources: (id: number, signal?: AbortSignal) =>
     request<ViewingSource[]>(`/titles/${id}/sources`, { signal }),

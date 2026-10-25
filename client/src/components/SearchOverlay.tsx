@@ -122,7 +122,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     (result: AutocompleteItem) => {
       rememberSearch(query || result.name)
       close()
-      navigate(`/title/${result.id}`)
+      navigate(`/title/${result.id}?type=${result.type}`)
     },
     [navigate, rememberSearch, query, close],
   )

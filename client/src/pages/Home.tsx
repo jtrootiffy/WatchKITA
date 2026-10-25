@@ -54,17 +54,20 @@ export default function Home() {
     genreId !== null,
   )
 
-  const heroIds = useMemo(
-    () => (trending.data?.titles ?? []).slice(0, 3).map((title) => title.id),
+  const heroItems = useMemo(
+    () =>
+      (trending.data?.titles ?? [])
+        .slice(0, 3)
+        .map((title) => ({ id: title.id, type: title.type })),
     [trending.data],
   )
 
   const heroQueries = useQueries({
-    queries: heroIds.map((id) => ({
-      queryKey: queryKeys.title(id),
-      queryFn: ({ signal }: { signal: AbortSignal }) => api.title(id, signal),
+    queries: heroItems.map((item) => ({
+      queryKey: queryKeys.title(item.id, item.type),
+      queryFn: ({ signal }: { signal: AbortSignal }) => api.title(item.id, item.type, signal),
       staleTime: 60 * 60 * 1000,
-      enabled: Boolean(id),
+      enabled: Boolean(item.id),
       retry: 1,
     })),
   })
@@ -74,7 +77,8 @@ export default function Home() {
     .filter((details): details is TitleDetails => Boolean(details))
 
   const heroLoading =
-    trending.isLoading || (heroIds.length > 0 && slides.length === 0 && heroQueries.some((query) => query.isLoading))
+    trending.isLoading ||
+    (heroItems.length > 0 && slides.length === 0 && heroQueries.some((query) => query.isLoading))
 
   const pickedGenre = genres.data?.find((genre) => genre.id === genreId) ?? null
   const featuredGenres = (genres.data ?? []).slice(0, 6)

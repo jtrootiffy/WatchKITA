@@ -74,7 +74,7 @@ export async function getTitleList(filters: TitleFilters): Promise<{
   )
 }
 
-export async function getTitleDetails(id: number, region: string): Promise<{
+interface TitleDetailsRecord {
   id: number
   title: string
   year: number | null
@@ -99,42 +99,41 @@ export async function getTitleDetails(id: number, region: string): Promise<{
   networkNames: string[]
   imdbId: string | null
   tmdbId: number | null
-}> {
-  // TMDB doesn't distinguish between TV subtypes; map to 'tv' family.
-  // Try movie first, fall back to TV.
-  try {
-    const movie = await getTmdbMovie(id)
-    return {
-      id: movie.tmdbId,
-      title: movie.title,
-      year: movie.year ?? null,
-      type: 'movie',
-      poster: movie.poster ?? null,
-      posterMedium: movie.poster ?? null,
-      posterLarge: movie.poster ?? null,
-      backdrop: movie.backdrop ?? null,
-      plotOverview: movie.overview ?? null,
-      runtimeMinutes: movie.runtimeMinutes ?? null,
-      releaseDate: movie.year ? `${movie.year}-01-01` : null,
-      endYear: null,
-      genres: [],
-      genreNames: movie.genres,
-      userRating: null,
-      criticScore: null,
-      contentRating: null,
-      contentRatings: {},
-      trailer: null,
-      trailerThumbnail: null,
-      similarTitles: [],
-      networkNames: [],
-      imdbId: null,
-      tmdbId: movie.tmdbId,
-    }
-  } catch {
-    // Not a movie; try TV series.
-  }
+}
 
-  const series = await getTmdbSeries(id)
+type MovieSource = Awaited<ReturnType<typeof getTmdbMovie>>
+type SeriesSource = Awaited<ReturnType<typeof getTmdbSeries>>
+
+function movieDetailsRecord(movie: MovieSource): TitleDetailsRecord {
+  return {
+    id: movie.tmdbId,
+    title: movie.title,
+    year: movie.year ?? null,
+    type: 'movie',
+    poster: movie.poster ?? null,
+    posterMedium: movie.poster ?? null,
+    posterLarge: movie.poster ?? null,
+    backdrop: movie.backdrop ?? null,
+    plotOverview: movie.overview ?? null,
+    runtimeMinutes: movie.runtimeMinutes ?? null,
+    releaseDate: movie.year ? `${movie.year}-01-01` : null,
+    endYear: null,
+    genres: [],
+    genreNames: movie.genres,
+    userRating: null,
+    criticScore: null,
+    contentRating: null,
+    contentRatings: {},
+    trailer: null,
+    trailerThumbnail: null,
+    similarTitles: [],
+    networkNames: [],
+    imdbId: null,
+    tmdbId: movie.tmdbId,
+  }
+}
+
+function seriesDetailsRecord(series: SeriesSource): TitleDetailsRecord {
   return {
     id: series.tmdbId,
     title: series.title,
@@ -161,6 +160,31 @@ export async function getTitleDetails(id: number, region: string): Promise<{
     imdbId: null,
     tmdbId: series.tmdbId,
   }
+}
+
+/**
+ * TMDB movies and TV shows share one numeric id space, so an id alone is
+ * ambiguous. Callers that know the media type get exactly that record; without
+ * a type the legacy movie-then-TV lookup is kept for deep links.
+ */
+export async function getTitleDetails(
+  id: number,
+  region: string,
+  type?: TitleType,
+): Promise<TitleDetailsRecord> {
+  // Region is not part of the TMDB details payload; kept for interface parity.
+  void region
+
+  if (type !== 'tv') {
+    try {
+      return movieDetailsRecord(await getTmdbMovie(id))
+    } catch (error) {
+      if (type === 'movie') throw error
+      // No movie with that id: fall through to the TV lookup.
+    }
+  }
+
+  return seriesDetailsRecord(await getTmdbSeries(id))
 }
 
 export async function getTitleSources(id: number, region: string): Promise<
@@ -355,41 +379,57 @@ export async function searchFull(term: string, typeFilter: SearchTypeFilter): Pr
     }))
 }
 
-export async function getPosters(ids: number[]): Promise<Array<{ id: number; title: string; year: number | null; type: TitleType; poster: string | null; backdrop: string | null }>> {
-  // TMDB doesn't have a batch poster endpoint. Fetch details for each ID.
-  const unique = [...new Set(ids)].slice(0, 30)
+export async function getPosters(
+  ids: number[],
+  types: Array<TitleType | null> = [],
+): Promise<Array<{ id: number; title: string; year: number | null; type: TitleType; poster: string | null; backdrop: string | null }>> {
+  // TMDB has no batch poster endpoint and shares ids across media types, so each
+  // id is resolved against the type the catalog reported for that card.
+  const requested = new Map<number, TitleType | null>()
+  ids.forEach((id, index) => {
+    if (!requested.has(id)) requested.set(id, types[index] ?? null)
+  })
+
+  const unique = [...requested.entries()].slice(0, 30)
   const posters = await Promise.all(
-    unique.map(async (id) => {
-      try {
-        const movie = await getTmdbMovie(id)
-        return {
-          id: movie.tmdbId,
-          title: movie.title,
-          year: movie.year ?? null,
-          type: 'movie' as const,
-          poster: movie.poster ?? null,
-          backdrop: movie.backdrop ?? null,
-        }
-      } catch {
+    unique.map(async ([id, type]) => {
+      if (type !== 'tv') {
         try {
-          const series = await getTmdbSeries(id)
+          const movie = await getTmdbMovie(id)
           return {
-            id: series.tmdbId,
-            title: series.title,
-            year: series.year ?? null,
-            type: 'tv' as const,
-            poster: series.poster ?? null,
-            backdrop: series.backdrop ?? null,
+            id: movie.tmdbId,
+            title: movie.title,
+            year: movie.year ?? null,
+            type: 'movie' as const,
+            poster: movie.poster ?? null,
+            backdrop: movie.backdrop ?? null,
           }
         } catch {
-          return {
-            id,
-            title: 'Untitled',
-            year: null,
-            type: 'movie' as const,
-            poster: null,
-            backdrop: null,
+          // Fall through to the TV lookup unless the type was explicitly a movie.
+          if (type === 'movie') {
+            return { id, title: 'Untitled', year: null, type: 'movie' as const, poster: null, backdrop: null }
           }
+        }
+      }
+
+      try {
+        const series = await getTmdbSeries(id)
+        return {
+          id: series.tmdbId,
+          title: series.title,
+          year: series.year ?? null,
+          type: 'tv' as const,
+          poster: series.poster ?? null,
+          backdrop: series.backdrop ?? null,
+        }
+      } catch {
+        return {
+          id,
+          title: 'Untitled',
+          year: null,
+          type: 'tv' as const,
+          poster: null,
+          backdrop: null,
         }
       }
     }),

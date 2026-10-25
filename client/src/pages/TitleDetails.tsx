@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, Check, ExternalLink, Play, Plus, Share2 } from 'lucide-react'
 import { ApiError, errorMessage } from '../lib/api'
 import { buildWatchUrl } from '@/lib/player'
@@ -31,8 +31,14 @@ export default function TitleDetails() {
   const { addToast } = useToast()
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
-  const titleQuery = useTitleQuery(validId)
+  // Cards pass the media type they were rendered from: TMDB movie and TV ids
+  // overlap, so guessing "movie first" can open a different title.
+  const typeParam = searchParams.get('type')
+  const requestedType = typeParam === 'movie' || typeParam === 'tv' ? typeParam : undefined
+
+  const titleQuery = useTitleQuery(validId, requestedType)
   const sourcesQuery = useSourcesQuery(validId)
   const castQuery = useCastQuery(validId)
   const details = titleQuery.data
@@ -239,7 +245,7 @@ export default function TitleDetails() {
                   onClick={() => {
                     navigate(
                       buildWatchUrl(isTv(details.type) ? 'tv' : 'movie', details.tmdbId!, {
-                        back: `/title/${details.id}`,
+                        back: `/title/${details.id}?type=${details.type}`,
                         title: details.title,
                         year: details.year,
                         poster: details.poster,

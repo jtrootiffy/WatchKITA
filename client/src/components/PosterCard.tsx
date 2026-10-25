@@ -47,7 +47,7 @@ export default function PosterCard({
   }, [])
 
   const shouldFetch = visible && !posterUrl
-  const fetched = usePoster(shouldFetch ? item.id : undefined)
+  const fetched = usePoster(shouldFetch ? item.id : undefined, item.type)
   const poster = posterUrl ?? fetched?.poster ?? null
   const isLoading = shouldFetch && fetched === undefined
 
@@ -56,7 +56,7 @@ export default function PosterCard({
       ref={containerRef}
       className={`group relative ${layout === 'rail' ? 'w-[148px] shrink-0 sm:w-[168px] lg:w-[188px]' : 'w-full'}`}
     >
-      <Link to={`/title/${item.id}`} className="block focus:outline-none">
+      <Link to={`/title/${item.id}?type=${item.type}`} className="block focus:outline-none">
         <div className="relative aspect-[2/3] overflow-hidden bg-surface">
           {isLoading ? (
             <div className="h-full w-full animate-pulse bg-surface" aria-hidden="true" />

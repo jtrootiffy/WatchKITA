@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { api, ApiError, type TitleQuery } from './api'
+import type { TitleType } from '../types'
 
 const MINUTE = 60_000
 const HOUR = 60 * MINUTE
@@ -11,7 +12,7 @@ export const queryKeys = {
   sourceReferences: ['source-references'] as const,
   regions: ['regions'] as const,
   status: ['status'] as const,
-  title: (id: number) => ['title', id] as const,
+  title: (id: number, type?: TitleType | null) => ['title', type ?? 'any', id] as const,
   sources: (id: number) => ['title-sources', id] as const,
   cast: (id: number) => ['title-cast', id] as const,
   seasons: (id: number) => ['title-seasons', id] as const,
@@ -70,10 +71,10 @@ export function useStatusQuery() {
   })
 }
 
-export function useTitleQuery(id: number | undefined) {
+export function useTitleQuery(id: number | undefined, type?: TitleType | null) {
   return useQuery({
-    queryKey: queryKeys.title(id ?? 0),
-    queryFn: ({ signal }) => api.title(id as number, signal),
+    queryKey: queryKeys.title(id ?? 0, type),
+    queryFn: ({ signal }) => api.title(id as number, type, signal),
     enabled: Boolean(id),
     staleTime: HOUR,
     retry: (attempt, error) =>
@@ -186,10 +187,14 @@ export function useInfiniteTitlesQuery(query: TitleQuery) {
   })
 }
 
-export function usePosterBatchQuery(ids: number[], enabled = true) {
+export function usePosterBatchQuery(
+  ids: number[],
+  enabled = true,
+  types?: Array<TitleType | null>,
+) {
   return useQuery({
-    queryKey: queryKeys.posterBatch(ids),
-    queryFn: ({ signal }) => api.posters(ids, signal),
+    queryKey: [...queryKeys.posterBatch(ids), types?.join(',') ?? 'any'],
+    queryFn: ({ signal }) => api.posters(ids, types, signal),
     enabled: enabled && ids.length > 0,
     staleTime: DAY,
     retry: 1,

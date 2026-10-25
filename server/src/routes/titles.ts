@@ -111,11 +111,48 @@ router.get('/posters', async (req, res, next) => {
           .string()
           .min(1, 'At least one title id is required.')
           .regex(/^\d+(,\d+)*$/, 'Ids must be a comma-separated list of numbers.'),
+        types: z.string().optional(),
       }),
       req.query,
     )
 
-    const ids = [...new Set(raw.ids.split(',').map((value) => Number.parseInt(value, 10)))]
+    const rawIds = raw.ids.split(',').map((value) => Number.parseInt(value, 10))
+    const rawTypes = raw.types === undefined ? [] : raw.types.split(',').map((value) => value.trim())
+
+    if (rawTypes.length > 0 && rawTypes.length !== rawIds.length) {
+      res.status(400).json({
+        error: {
+          code: 'bad_request',
+          message: 'The types list must match the ids list.',
+          retryable: false,
+        },
+      })
+      return
+    }
+
+    const invalidType = rawTypes.find((value) => value !== '' && value !== 'movie' && value !== 'tv')
+    if (invalidType !== undefined) {
+      res.status(400).json({
+        error: {
+          code: 'bad_request',
+          message: 'Types must be movie, tv, or empty.',
+          retryable: false,
+        },
+      })
+      return
+    }
+
+    const processed = new Set<number>()
+    const ids: number[] = []
+    const types: Array<TitleFilters['types'][number] | null> = []
+    rawIds.forEach((id, index) => {
+      if (processed.has(id)) return
+      processed.add(id)
+      ids.push(id)
+      const type = rawTypes[index]
+      types.push(type === 'movie' || type === 'tv' ? type : null)
+    })
+
     if (ids.length > 30) {
       res.status(400).json({
         error: {
@@ -127,7 +164,7 @@ router.get('/posters', async (req, res, next) => {
       return
     }
 
-    res.json({ posters: await getPosters(ids) })
+    res.json({ posters: await getPosters(ids, types) })
   } catch (error) {
     next(error)
   }
@@ -137,7 +174,9 @@ router.get('/:id', async (req, res, next) => {
   try {
     const id = Number.parseInt(parseOrThrow(titleIdSchema, req.params.id), 10)
     const region = parseOrThrow(regionSchema.optional().default('PH'), req.query.region)
-    res.json(await getTitleDetails(id, region))
+    // Movie and TV ids overlap on TMDB, so the catalog passes the card's type.
+    const type = parseOrThrow(z.enum(['movie', 'tv']).optional(), req.query.type)
+    res.json(await getTitleDetails(id, region, type))
   } catch (error) {
     next(error)
   }
