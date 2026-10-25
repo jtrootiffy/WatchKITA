@@ -1,0 +1,251 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" width="100%" height="auto">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="darkBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080709" />
+      <stop offset="50%" stop-color="#0C0A0C" />
+      <stop offset="100%" stop-color="#050506" />
+    </linearGradient>
+
+    <!-- Ambient Glows -->
+    <radialGradient id="redGlow" cx="20%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#D00000" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#D00000" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="tealGlow" cx="80%" cy="70%" r="60%">
+      <stop offset="0%" stop-color="#00C2CB" stop-opacity="0.14" />
+      <stop offset="50%" stop-color="#0A4D68" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#0C0A0C" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="violetGlow" cx="70%" cy="20%" r="40%">
+      <stop offset="0%" stop-color="#5E17EB" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#0C0A0C" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Card Gradients -->
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#191619" />
+      <stop offset="100%" stop-color="#121012" />
+    </linearGradient>
+    <linearGradient id="previewMediaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1624" />
+      <stop offset="40%" stop-color="#0E1724" />
+      <stop offset="100%" stop-color="#090B0E" />
+    </linearGradient>
+    <linearGradient id="primaryRed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF1A1A" />
+      <stop offset="100%" stop-color="#D00000" />
+    </linearGradient>
+
+    <!-- Subtle Grid Pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#262226" stroke-width="0.7" stroke-opacity="0.4" />
+    </pattern>
+
+    <!-- Drop Shadows -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+  </defs>
+
+  <style>
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    .font-serif { font-family: 'Playfair Display', Georgia, Cambria, serif; }
+    .eyebrow { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; fill: #A7A3A7; }
+    .title { font-size: 48px; font-weight: 800; fill: #FFFFFF; letter-spacing: 2px; }
+    .tagline { font-size: 19px; fill: #E5E2E5; font-style: italic; }
+    .desc { font-size: 13.5px; fill: #9E9B9E; line-height: 1.6; }
+    .badge-text { font-size: 10px; font-weight: 700; letter-spacing: 1px; fill: #FFFFFF; }
+  </style>
+
+  <!-- Outer Canvas -->
+  <rect width="1200" height="460" rx="16" fill="url(#darkBg)" stroke="#262226" stroke-width="1.5" />
+  
+  <!-- Subtle Grid Overlay -->
+  <rect width="1200" height="460" rx="16" fill="url(#grid)" />
+
+  <!-- Ambient Light Blurs -->
+  <rect width="1200" height="460" rx="16" fill="url(#redGlow)" />
+  <rect width="1200" height="460" rx="16" fill="url(#tealGlow)" />
+  <rect width="1200" height="460" rx="16" fill="url(#violetGlow)" />
+
+  <!-- Top Accent Highlight -->
+  <line x1="80" y1="1" x2="400" y2="1" stroke="#D00000" stroke-width="2.5" stroke-linecap="round" />
+  <line x1="420" y1="1" x2="520" y2="1" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+
+  <!-- ================= LEFT BRANDING COLUMN ================= -->
+  <g transform="translate(68, 64)">
+    
+    <!-- Eyebrow Pill -->
+    <g transform="translate(0, 0)">
+      <rect width="260" height="26" rx="13" fill="#191619" stroke="#262226" stroke-width="1" />
+      <circle cx="16" cy="13" r="4" fill="#D00000" />
+      <text x="30" y="17" class="font-sans eyebrow">CINEMATIC STREAMING GUIDE</text>
+    </g>
+
+    <!-- Brand Heading -->
+    <text x="0" y="78" class="font-serif title">
+      WATCH<tspan fill="#D00000">KITA</tspan>
+    </text>
+
+    <!-- Tagline -->
+    <text x="0" y="112" class="font-sans tagline">
+      “Your stories. Your screen. Let’s watch together.”
+    </text>
+
+    <!-- Description -->
+    <text x="0" y="148" class="font-sans desc">
+      <tspan x="0" dy="0">An editorial streaming web application bringing movies and television</tspan>
+      <tspan x="0" dy="22">series together with rich TMDB metadata, regional availability,</tspan>
+      <tspan x="0" dy="22">and an integrated dark-room playback experience.</tspan>
+    </text>
+
+    <!-- Meaning badge -->
+    <g transform="translate(0, 226)">
+      <rect width="365" height="34" rx="8" fill="#131113" stroke="#262226" stroke-width="1" />
+      <text x="14" y="21" class="font-sans" font-size="11.5" fill="#A7A3A7">
+        <tspan fill="#D00000" font-weight="bold">KITA</tspan> = “Us” in Waray-Waray &#160;•&#160; <tspan fill="#FFFFFF" font-style="italic">Kita-kita (Watch together)</tspan>
+      </text>
+    </g>
+
+    <!-- Pill Badges Row -->
+    <g transform="translate(0, 280)">
+      <!-- Live App Badge -->
+      <g>
+        <rect width="186" height="32" rx="6" fill="#D00000" />
+        <polygon points="18,11 18,21 27,16" fill="#FFFFFF" />
+        <text x="36" y="20.5" class="font-sans badge-text">WATCHKITA.VERCEL.APP</text>
+      </g>
+      <!-- Movies & TV Badge -->
+      <g transform="translate(196, 0)">
+        <rect width="140" height="32" rx="6" fill="#191619" stroke="#262226" stroke-width="1" />
+        <text x="14" y="20.5" class="font-sans badge-text" fill="#E2DFE2">MOVIES &amp; SERIES</text>
+      </g>
+      <!-- Tech Badge -->
+      <g transform="translate(346, 0)">
+        <rect width="130" height="32" rx="6" fill="#191619" stroke="#262226" stroke-width="1" />
+        <text x="14" y="20.5" class="font-sans badge-text" fill="#A7A3A7">CINESRC + TMDB</text>
+      </g>
+    </g>
+
+  </g>
+
+  <!-- ================= RIGHT SHOWCASE MOCKUP ================= -->
+  <g transform="translate(630, 48)" filter="url(#shadow)">
+    
+    <!-- Floating Cinematic Card Window -->
+    <rect width="500" height="364" rx="12" fill="url(#cardGrad)" stroke="#262226" stroke-width="1.2" />
+
+    <!-- Window Header -->
+    <rect width="500" height="38" rx="12" fill="#131113" />
+    <rect y="26" width="500" height="12" fill="#131113" />
+    <line x1="0" y1="38" x2="500" y2="38" stroke="#262226" stroke-width="1" />
+    
+    <!-- Dots -->
+    <circle cx="20" cy="19" r="4.5" fill="#FF5F56" />
+    <circle cx="34" cy="19" r="4.5" fill="#FFBD2E" />
+    <circle cx="48" cy="19" r="4.5" fill="#27C93F" />
+    
+    <!-- Nav / Title in window -->
+    <text x="70" y="23" class="font-sans" font-size="11" font-weight="700" fill="#FFFFFF" letter-spacing="1">
+      WATCH<tspan fill="#D00000">KITA</tspan>
+    </text>
+    <text x="170" y="23" class="font-sans" font-size="10" fill="#A7A3A7">Movies</text>
+    <text x="225" y="23" class="font-sans" font-size="10" fill="#A7A3A7">TV Series</text>
+    <text x="290" y="23" class="font-sans" font-size="10" fill="#A7A3A7">Watchlist</text>
+    
+    <rect x="390" y="9" width="94" height="20" rx="10" fill="#191619" stroke="#262226" stroke-width="0.8" />
+    <text x="404" y="23" class="font-sans" font-size="9" fill="#888888">🔍 Search</text>
+
+    <!-- Simulated Player Media Canvas -->
+    <g transform="translate(16, 52)">
+      <rect width="468" height="196" rx="8" fill="url(#previewMediaGrad)" stroke="#262226" stroke-width="0.8" />
+
+      <!-- Abstract Cinematic Art Shapes inside player -->
+      <circle cx="370" cy="70" r="90" fill="#5E17EB" opacity="0.15" />
+      <circle cx="120" cy="130" r="110" fill="#D00000" opacity="0.18" />
+      <circle cx="240" cy="60" r="60" fill="#00C2CB" opacity="0.12" />
+
+      <!-- Movie Premiere Badge -->
+      <rect x="18" y="16" width="124" height="20" rx="3" fill="#D00000" />
+      <text x="25" y="30" class="font-sans" font-size="9" font-weight="800" fill="#FFFFFF" letter-spacing="0.8">★ FEATURED STREAM</text>
+
+      <rect x="148" y="16" width="58" height="20" rx="3" fill="#131113" stroke="#262226" stroke-width="1" />
+      <text x="156" y="30" class="font-sans" font-size="9" font-weight="700" fill="#FFBD2E">⭐ 9.2</text>
+
+      <!-- Overlay Movie Title -->
+      <text x="18" y="78" class="font-serif" font-size="22" font-weight="800" fill="#FFFFFF" letter-spacing="1">
+        ECHOES OF THE VALIANT
+      </text>
+
+      <text x="18" y="98" class="font-sans" font-size="10.5" fill="#C0BDC0">
+        4K UHD &#160;•&#160; 2026 &#160;•&#160; 2h 18m &#160;•&#160; Sci-Fi / Drama &#160;•&#160; Multi-Audio
+      </text>
+
+      <text x="18" y="118" class="font-sans" font-size="9.5" fill="#999999">
+        An anomaly surfaces beyond orbit, unlocking an enigmatic temporal frequency.
+      </text>
+
+      <!-- Player Controls Overlay -->
+      <g transform="translate(18, 142)">
+        <!-- Play Button -->
+        <circle cx="16" cy="16" r="16" fill="url(#primaryRed)" />
+        <polygon points="13,10 13,22 23,16" fill="#FFFFFF" />
+
+        <!-- Watchlist Button -->
+        <rect x="42" y="3" width="105" height="26" rx="4" fill="#131113" stroke="#332d33" stroke-width="1" />
+        <text x="52" y="20" class="font-sans" font-size="9.5" font-weight="600" fill="#FFFFFF">+ WATCHLIST</text>
+
+        <!-- Progress Timeline -->
+        <g transform="translate(162, 10)">
+          <line x1="0" y1="5" x2="260" y2="5" stroke="#262226" stroke-width="3" stroke-linecap="round" />
+          <line x1="0" y1="5" x2="110" y2="5" stroke="#D00000" stroke-width="3" stroke-linecap="round" />
+          <circle cx="110" cy="5" r="4" fill="#FFFFFF" />
+          <text x="210" y="19" class="font-sans" font-size="8.5" fill="#777777">48:12 / 2:18:00</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Mini Rail Section below player -->
+    <g transform="translate(16, 260)">
+      <text x="0" y="14" class="font-sans" font-size="10.5" font-weight="700" fill="#FFFFFF" letter-spacing="0.5">
+        CONTINUE WATCHING &amp; POPULAR
+      </text>
+      
+      <!-- Mini Card 1 -->
+      <g transform="translate(0, 24)">
+        <rect width="148" height="66" rx="6" fill="#131113" stroke="#262226" stroke-width="0.8" />
+        <rect x="6" y="6" width="36" height="54" rx="4" fill="#1E1624" />
+        <text x="18" y="36" font-size="14">🌃</text>
+        <text x="48" y="22" class="font-sans" font-size="10" font-weight="700" fill="#FFFFFF">Neon Horizon</text>
+        <text x="48" y="36" class="font-sans" font-size="8.5" fill="#888888">Movie • 2025</text>
+        <rect x="48" y="44" width="45" height="12" rx="2" fill="#D00000" />
+        <text x="52" y="53" class="font-sans" font-size="7" font-weight="700" fill="#FFFFFF">▶ RESUME</text>
+      </g>
+
+      <!-- Mini Card 2 -->
+      <g transform="translate(160, 24)">
+        <rect width="148" height="66" rx="6" fill="#131113" stroke="#262226" stroke-width="0.8" />
+        <rect x="6" y="6" width="36" height="54" rx="4" fill="#0A2647" />
+        <text x="18" y="36" font-size="14">🏰</text>
+        <text x="48" y="22" class="font-sans" font-size="10" font-weight="700" fill="#FFFFFF">Dynasty Tides</text>
+        <text x="48" y="36" class="font-sans" font-size="8.5" fill="#888888">Series • S3 E4</text>
+        <rect x="48" y="44" width="45" height="12" rx="2" fill="#191619" stroke="#262226" stroke-width="0.8" />
+        <text x="52" y="53" class="font-sans" font-size="7" font-weight="700" fill="#27C93F">● EPISODE 4</text>
+      </g>
+
+      <!-- Mini Card 3 -->
+      <g transform="translate(320, 24)">
+        <rect width="148" height="66" rx="6" fill="#131113" stroke="#262226" stroke-width="0.8" />
+        <rect x="6" y="6" width="36" height="54" rx="4" fill="#2C1B10" />
+        <text x="18" y="36" font-size="14">⏳</text>
+        <text x="48" y="22" class="font-sans" font-size="10" font-weight="700" fill="#FFFFFF">Chrono Rift</text>
+        <text x="48" y="36" class="font-sans" font-size="8.5" fill="#888888">Movie • 2026</text>
+        <rect x="48" y="44" width="45" height="12" rx="2" fill="#191619" stroke="#262226" stroke-width="0.8" />
+        <text x="52" y="53" class="font-sans" font-size="7" font-weight="700" fill="#FFBD2E">★ 8.9 TMDB</text>
+      </g>
+    </g>
+
+  </g>
+
+</svg>

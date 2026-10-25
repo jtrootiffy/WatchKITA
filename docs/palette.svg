@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 170" width="100%" height="auto">
+  <defs>
+    <linearGradient id="paletteCanvas" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141114" />
+      <stop offset="100%" stop-color="#09080A" />
+    </linearGradient>
+  </defs>
+
+  <style>
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    .swatch-name { font-size: 13px; font-weight: 700; fill: #FFFFFF; }
+    .swatch-hex { font-size: 11.5px; font-family: 'JetBrains Mono', Consolas, Monaco, monospace; font-weight: 600; }
+    .swatch-role { font-size: 10px; fill: #8E8A8E; text-transform: uppercase; letter-spacing: 0.8px; }
+  </style>
+
+  <!-- Container -->
+  <rect width="1200" height="170" rx="12" fill="url(#paletteCanvas)" stroke="#262226" stroke-width="1.2" />
+
+  <!-- Title / Label -->
+  <text x="36" y="32" class="font-sans" font-size="11" font-weight="700" fill="#A7A3A7" letter-spacing="1.5">
+    DESIGN TOKENS &amp; CINEMATIC PALETTE
+  </text>
+  <line x1="36" y1="44" x2="1164" y2="44" stroke="#262226" stroke-width="0.8" />
+
+  <!-- 7 Swatches Layout: Width ~150px each, gap 12px -->
+  
+  <!-- 1. Background -->
+  <g transform="translate(36, 58)">
+    <rect width="148" height="52" rx="6" fill="#0C0A0C" stroke="#332D33" stroke-width="1" />
+    <text x="0" y="72" class="font-sans swatch-name">Background</text>
+    <text x="0" y="88" class="swatch-hex" fill="#D0D0D0">#0C0A0C</text>
+    <text x="0" y="102" class="font-sans swatch-role">Deep Canvas</text>
+  </g>
+
+  <!-- 2. Surface -->
+  <g transform="translate(196, 58)">
+    <rect width="148" height="52" rx="6" fill="#131113" stroke="#262226" stroke-width="1" />
+    <text x="0" y="72" class="font-sans swatch-name">Surface</text>
+    <text x="0" y="88" class="swatch-hex" fill="#D0D0D0">#131113</text>
+    <text x="0" y="102" class="font-sans swatch-role">Cards &amp; Panels</text>
+  </g>
+
+  <!-- 3. Raised -->
+  <g transform="translate(356, 58)">
+    <rect width="148" height="52" rx="6" fill="#191619" stroke="#332D33" stroke-width="1" />
+    <text x="0" y="72" class="font-sans swatch-name">Raised</text>
+    <text x="0" y="88" class="swatch-hex" fill="#D0D0D0">#191619</text>
+    <text x="0" y="102" class="font-sans swatch-role">Modals &amp; Search</text>
+  </g>
+
+  <!-- 4. Line -->
+  <g transform="translate(516, 58)">
+    <rect width="148" height="52" rx="6" fill="#262226" stroke="#403A40" stroke-width="1" />
+    <text x="0" y="72" class="font-sans swatch-name">Line / Divider</text>
+    <text x="0" y="88" class="swatch-hex" fill="#D0D0D0">#262226</text>
+    <text x="0" y="102" class="font-sans swatch-role">Hairline Borders</text>
+  </g>
+
+  <!-- 5. Primary -->
+  <g transform="translate(676, 58)">
+    <rect width="148" height="52" rx="6" fill="#D00000" stroke="#FF3333" stroke-width="0.8" />
+    <text x="0" y="72" class="font-sans swatch-name">Primary</text>
+    <text x="0" y="88" class="swatch-hex" fill="#FF4D4D">#D00000</text>
+    <text x="0" y="102" class="font-sans swatch-role">Electric Crimson</text>
+  </g>
+
+  <!-- 6. Accent -->
+  <g transform="translate(836, 58)">
+    <rect width="148" height="52" rx="6" fill="#664400" stroke="#8A5C00" stroke-width="0.8" />
+    <text x="0" y="72" class="font-sans swatch-name">Accent</text>
+    <text x="0" y="88" class="swatch-hex" fill="#FFB733">#664400</text>
+    <text x="0" y="102" class="font-sans swatch-role">Ratings &amp; Amber</text>
+  </g>
+
+  <!-- 7. Muted -->
+  <g transform="translate(996, 58)">
+    <rect width="148" height="52" rx="6" fill="#A7A3A7" stroke="#C4C0C4" stroke-width="0.8" />
+    <text x="0" y="72" class="font-sans swatch-name">Muted</text>
+    <text x="0" y="88" class="swatch-hex" fill="#A7A3A7">#A7A3A7</text>
+    <text x="0" y="102" class="font-sans swatch-role">Secondary Text</text>
+  </g>
+
+</svg>
