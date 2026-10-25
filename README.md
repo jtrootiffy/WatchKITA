@@ -138,21 +138,24 @@ If Supabase is not configured, watchlist cloud calls return `503 watchlist_unava
 ## Deploying to Vercel
 
 1. Push the repository to GitHub and import it in Vercel.
-2. Set environment variables in **Project → Settings → Environment Variables**:
+2. Make sure the project's **Framework Preset** is **Vite**. `vercel.json` pins `"framework": "vite"`; leaving the project on the **Services** preset fails the build with `[MISSING_SERVICES]`, because that preset requires `services` entries in `vercel.json`.
+3. Set environment variables in **Project → Settings → Environment Variables**:
 
 ```
-WATCHMODE_API_KEY=...
+TMDB_API_KEY=...
 SUPABASE_URL=...              # optional
 SUPABASE_SERVICE_KEY=...      # optional
 ALLOWED_ORIGINS=https://your-domain.example
 ```
 
-3. Deploy. `vercel.json` already defines:
-   - build command `npm run build:client`,
+4. Deploy. `vercel.json` already defines:
+   - build command `npm run build` (client bundle **and** server TypeScript — the function imports `server/dist/app.js`, so both must be built),
    - output directory `client/dist`,
-   - a single serverless function at `api/index.ts` with 30s max duration,
-   - `/api/:path*` rewritten to that function (the original sub-path is passed as `__path` and restored before Express routing),
+   - a single serverless function at `api/index.ts` with 30s max duration and `server/**` included in the bundle,
+   - `/api/*` rewritten to that function, which receives the original path (`/api/health`, `/api/titles/123`, ...),
    - other paths rewritten to `index.html` for client-side routing.
+
+`package.json` also provides a `vercel-build` script that runs the same full build, since Vercel prefers it over the preset's build command when present.
 
 The API key stays in the Vercel server environment. It is never sent to the browser.
 
@@ -183,7 +186,7 @@ The API key stays in the Vercel server environment. It is never sent to the brow
 | `npm run dev` | API and client together |
 | `npm run dev:server` | Express on port 5000 |
 | `npm run dev:client` | Vite on port 5173 |
-| `npm run build` | Build client and server |
+| `npm run build` | Build client and server (also the `vercel-build` script) |
 | `npm run build:client` | Typecheck and build the client only |
 | `npm start` | Run the built server |
 | `npm run typecheck` | Typecheck both workspaces |

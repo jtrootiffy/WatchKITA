@@ -17,7 +17,7 @@
     "build:server": "npm run build --workspace=server",
     "start": "npm run start --workspace=server",
     "typecheck": "npm run typecheck --workspace=server && npm run typecheck --workspace=client",
-    "vercel-build": "npm run build:client"
+    "vercel-build": "npm run build"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
