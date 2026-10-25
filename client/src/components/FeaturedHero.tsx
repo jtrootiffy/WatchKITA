@@ -143,7 +143,7 @@ export default function FeaturedHero({ slides, isLoading, onRetry }: FeaturedHer
         </div>
       ) : null}
 
-      <div className="shell relative flex min-h-[600px] items-end pb-14 pt-32 sm:min-h-[640px] sm:pb-16 lg:min-h-[700px] lg:pb-20">
+      <div className="shell relative flex min-h-[460px] sm:min-h-[600px] lg:min-h-[700px] items-end pb-10 pt-24 sm:pb-16 sm:pt-32 lg:pb-20">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={slide.id}
@@ -160,7 +160,7 @@ export default function FeaturedHero({ slides, isLoading, onRetry }: FeaturedHer
 
             <motion.h1
               variants={fadeUp}
-              className="mt-4 font-serif text-4xl leading-[1.05] text-white sm:text-5xl lg:text-6xl xl:text-7xl"
+              className="mt-3 sm:mt-4 font-serif text-3xl leading-[1.08] text-white sm:text-5xl lg:text-6xl xl:text-7xl"
             >
               {slide.title}
             </motion.h1>
@@ -168,11 +168,11 @@ export default function FeaturedHero({ slides, isLoading, onRetry }: FeaturedHer
             {meta.length > 0 ? (
               <motion.ul
                 variants={fadeUp}
-                className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] uppercase tracking-widest text-white/80"
+                className="mt-3 sm:mt-5 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:gap-y-2 text-[10px] sm:text-[11px] uppercase tracking-widest text-white/80"
                 aria-label="Title details"
               >
                 {meta.map((value, metaIndex) => (
-                  <li key={`${value}-${metaIndex}`} className="flex items-center gap-3">
+                  <li key={`${value}-${metaIndex}`} className="flex items-center gap-2.5 sm:gap-3">
                     {metaIndex > 0 ? (
                       <span className="h-3 w-px bg-accent" aria-hidden="true" />
                     ) : null}
@@ -183,7 +183,7 @@ export default function FeaturedHero({ slides, isLoading, onRetry }: FeaturedHer
             ) : null}
 
             {slide.genreNames.length > 0 ? (
-              <motion.p variants={fadeUp} className="mt-3 text-xs text-muted">
+              <motion.p variants={fadeUp} className="mt-2.5 sm:mt-3 text-xs text-muted">
                 {slide.genreNames.slice(0, 4).join(' · ')}
               </motion.p>
             ) : null}
@@ -191,14 +191,19 @@ export default function FeaturedHero({ slides, isLoading, onRetry }: FeaturedHer
             {slide.plotOverview ? (
               <motion.p
                 variants={fadeUp}
-                className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base"
+                className="mt-3 sm:mt-5 line-clamp-3 sm:line-clamp-none max-w-xl text-xs sm:text-base leading-relaxed text-white/80"
               >
                 {slide.plotOverview}
               </motion.p>
             ) : null}
 
-            <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3">
-              <ButtonLink to={`/title/${slide.id}?type=${slide.type}`} size="lg" variant="primary">
+            <motion.div variants={fadeUp} className="mt-6 sm:mt-8 flex flex-wrap items-center gap-2.5 sm:gap-3">
+              <ButtonLink
+                to={`/title/${slide.id}?type=${slide.type}`}
+                size="md"
+                className="sm:h-12 sm:px-7"
+                variant="primary"
+              >
                 <Info size={16} aria-hidden="true" />
                 Explore title
               </ButtonLink>
@@ -209,7 +214,8 @@ export default function FeaturedHero({ slides, isLoading, onRetry }: FeaturedHer
                   year: slide.year,
                   poster: slide.poster,
                 })}
-                size="lg"
+                size="md"
+                className="sm:h-12 sm:px-7"
                 variant="secondary"
                 aria-label={`Watch ${slide.title}`}
               >

@@ -271,8 +271,8 @@ export default function Watch() {
 
   return (
     <article className="watch-page">
-      <header className="shell pt-28 pb-6 lg:pt-36 lg:pb-8">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      <header className="shell pt-20 sm:pt-28 pb-4 sm:pb-6 lg:pt-36 lg:pb-8">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
           <Button variant="ghost" size="sm" onClick={goBack}>
             <ArrowLeft size={16} aria-hidden="true" />
             Back
@@ -289,12 +289,12 @@ export default function Watch() {
           </Button>
         </div>
 
-        <div className="mt-6 max-w-4xl">
+        <div className="mt-4 sm:mt-6 max-w-4xl">
           <p className="eyebrow">
             {typeLabel(isMovie ? 'movie' : 'tv')}
             {data.year ? ` · ${data.year}` : ''}
           </p>
-          <h1 className="mt-3 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
+          <h1 className="mt-2 sm:mt-3 font-serif text-2xl leading-tight text-white sm:text-4xl lg:text-5xl">
             {data.title}
           </h1>
         </div>
@@ -310,10 +310,10 @@ export default function Watch() {
         onClose={handlePlayerClose}
       />
 
-      <div className="shell pt-12 lg:pt-16 pb-20 lg:pb-24">
-        <div className="grid gap-8 lg:grid-cols-[260px_1fr] lg:gap-12">
-          <div>
-            <div className="aspect-[2/3] w-full max-w-[260px] overflow-hidden bg-surface rounded-lg">
+      <div className="shell pt-8 sm:pt-12 lg:pt-16 pb-16 sm:pb-20 lg:pb-24">
+        <div className="grid gap-6 sm:gap-8 lg:grid-cols-[240px_1fr] lg:gap-12">
+          <div className="flex justify-center sm:justify-start">
+            <div className="aspect-[2/3] w-36 sm:w-48 lg:w-full max-w-[240px] overflow-hidden bg-surface rounded-lg shadow-lg">
               <TitleImage
                 src={data.poster}
                 alt={`${data.title} poster`}
@@ -357,9 +357,9 @@ export default function Watch() {
 
             {isTvTitle ? (
               <>
-                <div className="mt-10 border-t border-line pt-8">
+                <div className="mt-8 sm:mt-10 border-t border-line pt-6 sm:pt-8">
                   <p className="eyebrow">Seasons &amp; episodes</p>
-                  <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Seasons">
+                  <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2" role="group" aria-label="Seasons">
                     {data.seasons.map((season) => (
                       <button
                         key={season.seasonNumber}
@@ -371,7 +371,7 @@ export default function Watch() {
                           const url = buildWatchTvUrl(tmdbId, season.seasonNumber, 1)
                           navigate(url, { replace: true })
                         }}
-                        className={`h-9 shrink-0 border px-3 text-xs transition-colors ${
+                        className={`h-8 sm:h-9 shrink-0 border px-2.5 sm:px-3 text-xs transition-colors ${
                           season.seasonNumber === selectedSeason
                             ? 'border-primary bg-primary text-white'
                             : 'border-line text-muted hover:border-muted hover:text-white'
@@ -384,11 +384,11 @@ export default function Watch() {
 
                   {activeSeason && data.episodes.length > 0 ? (
                     <>
-                      <div className="mt-6">
+                      <div className="mt-5 sm:mt-6">
                         <p className="eyebrow">
                           Season {selectedSeason} · {data.episodes.length} episodes
                         </p>
-                        <div className="mt-2 flex flex-wrap gap-2">
+                        <div className="mt-2 flex flex-wrap gap-1.5 sm:gap-2">
                           {data.episodes.map((ep) => (
                             <button
                               key={`${ep.seasonNumber}-${ep.episodeNumber}`}
@@ -398,7 +398,7 @@ export default function Watch() {
                                 ep.episodeNumber === selectedEpisode
                               }
                               onClick={() => handleSelectEpisode(ep.seasonNumber, ep.episodeNumber)}
-                              className={`shrink-0 border px-3 py-1.5 text-xs transition-colors ${
+                              className={`shrink-0 border px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs min-w-[38px] text-center transition-colors ${
                                 ep.seasonNumber === selectedSeason &&
                                 ep.episodeNumber === selectedEpisode
                                   ? 'border-primary bg-primary text-white'

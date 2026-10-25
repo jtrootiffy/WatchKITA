@@ -63,8 +63,8 @@ export default function DiscoveryFilters({
 
   return (
     <div className="sticky top-16 z-30 border-y border-line bg-bg lg:top-20">
-      <div className="shell py-4">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="shell py-3 sm:py-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           {showTypeTabs ? (
             <div className="flex items-center gap-1" role="group" aria-label="Content type">
               {(
@@ -79,7 +79,7 @@ export default function DiscoveryFilters({
                   type="button"
                   aria-pressed={filters.type === tab.value}
                   onClick={() => onChange({ type: tab.value })}
-                  className={`px-4 py-2 text-[10px] uppercase tracking-widest transition-colors ${
+                  className={`px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] uppercase tracking-widest transition-colors ${
                     filters.type === tab.value
                       ? 'bg-primary text-white'
                       : 'text-muted hover:bg-surface hover:text-white'
@@ -97,14 +97,14 @@ export default function DiscoveryFilters({
           )}
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-1.5 sm:gap-2">
               <span className="eyebrow hidden sm:inline">Year</span>
               <select
                 value={filters.year ?? ''}
                 onChange={(event) =>
                   onChange({ year: event.target.value ? Number(event.target.value) : null })
                 }
-                className="h-9 border border-line bg-bg px-2 text-xs text-white focus:border-muted focus:outline-none"
+                className="h-8 sm:h-9 border border-line bg-bg px-2 text-xs text-white focus:border-muted focus:outline-none"
                 aria-label="Release year"
               >
                 <option value="">Any year</option>
@@ -116,12 +116,12 @@ export default function DiscoveryFilters({
               </select>
             </label>
 
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-1.5 sm:gap-2">
               <span className="eyebrow hidden sm:inline">Sort</span>
               <select
                 value={filters.sortBy}
                 onChange={(event) => onChange({ sortBy: event.target.value })}
-                className="h-9 border border-line bg-bg px-2 text-xs text-white focus:border-muted focus:outline-none"
+                className="h-8 sm:h-9 border border-line bg-bg px-2 text-xs text-white focus:border-muted focus:outline-none"
                 aria-label="Sort titles"
               >
                 {SORT_OPTIONS.map((option) => (
@@ -134,7 +134,7 @@ export default function DiscoveryFilters({
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label="Genres">
+        <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-1.5 sm:gap-2 max-h-[160px] sm:max-h-none overflow-y-auto sm:overflow-visible pr-1 sm:pr-0" role="group" aria-label="Genres">
           {genresLoading ? (
             <span className="text-xs text-muted">Loading genres…</span>
           ) : genres.length === 0 ? (
@@ -149,7 +149,7 @@ export default function DiscoveryFilters({
                     type="button"
                     aria-pressed={selected}
                     onClick={() => toggleGenre(genre.id)}
-                    className={`border px-2.5 py-1.5 text-[11px] transition-colors ${
+                    className={`border px-2 py-1 sm:px-2.5 sm:py-1.5 text-[10px] sm:text-[11px] transition-colors ${
                       selected
                         ? 'border-primary bg-primary text-white'
                         : 'border-line text-muted hover:border-muted hover:text-white'
@@ -163,7 +163,7 @@ export default function DiscoveryFilters({
                 <button
                   type="button"
                   onClick={() => setShowAllGenres((value) => !value)}
-                  className="px-1 py-1.5 text-[11px] text-accent underline decoration-accent/50 underline-offset-4 transition-colors hover:text-white"
+                  className="px-1 py-1 text-[10px] sm:text-[11px] text-accent underline decoration-accent/50 underline-offset-4 transition-colors hover:text-white"
                 >
                   {showAllGenres ? 'Fewer genres' : 'More genres'}
                 </button>

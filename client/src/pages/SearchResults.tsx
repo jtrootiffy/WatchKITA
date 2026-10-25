@@ -44,16 +44,16 @@ export default function SearchResults() {
   }))
 
   return (
-    <div className="shell pb-20 pt-28 lg:pt-36">
+    <div className="shell pb-16 pt-20 sm:pb-20 sm:pt-28 lg:pt-36">
       <div className="flex items-center gap-3">
         <span className="h-[2px] w-6 bg-primary" aria-hidden="true" />
         <p className="eyebrow">Search</p>
       </div>
-      <h1 className="mt-4 font-serif text-4xl leading-tight text-white sm:text-5xl">
+      <h1 className="mt-2 sm:mt-4 font-serif text-2xl leading-tight text-white sm:text-4xl lg:text-5xl">
         {queryParam ? `Results for “${queryParam}”` : 'Search the catalog'}
       </h1>
 
-      <form onSubmit={submit} className="mt-8 flex max-w-xl items-center border border-line">
+      <form onSubmit={submit} className="mt-6 sm:mt-8 flex w-full max-w-xl items-center border border-line">
         <Search size={16} className="ml-3 text-muted" aria-hidden="true" />
         <input
           value={term}

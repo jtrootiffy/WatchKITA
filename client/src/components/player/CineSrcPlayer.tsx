@@ -419,10 +419,10 @@ export default function CineSrcPlayer({
 
   return (
     <section className="watch-player-section bg-bg">
-      <div className="shell pt-6 pb-16 lg:pt-10 lg:pb-20">
+      <div className="shell pt-4 pb-12 sm:pt-6 sm:pb-16 lg:pt-10 lg:pb-20">
         <div
           ref={frameRef}
-          className="watch-player-frame relative aspect-video w-full max-w-5xl mx-auto overflow-hidden bg-black rounded-xl shadow-2xl ring-1 ring-line/60"
+          className="watch-player-frame relative aspect-video w-full max-w-5xl mx-auto overflow-hidden bg-black rounded-lg sm:rounded-xl shadow-2xl ring-1 ring-line/60"
         >
           {playerError ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black text-white p-8">
@@ -470,88 +470,90 @@ export default function CineSrcPlayer({
         </div>
 
         {!playerError && (
-          <>
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 max-w-5xl mx-auto">
-              <div className="flex items-center gap-2">
-                {isTv ? (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handlePreviousEpisode}
-                      disabled={episode <= 1}
-                    >
-                      <ChevronLeft size={16} aria-hidden="true" />
-                      Previous
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={handleNextEpisode}>
-                      Next
-                      <ChevronRight size={16} aria-hidden="true" />
-                    </Button>
-                  </>
-                ) : null}
-              </div>
-
-              <div className="flex items-center gap-1 sm:gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleToggleMute}
-                  aria-label={isMuted ? 'Unmute' : 'Mute'}
-                >
-                  {isMuted || volume === 0 ? (
-                    <VolumeX size={16} aria-hidden="true" />
-                  ) : (
-                    <Volume2 size={16} aria-hidden="true" />
-                  )}
-                </Button>
-
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  value={isMuted ? 0 : volume}
-                  onChange={(event) => handleVolumeChange(Number(event.target.value))}
-                  aria-label="Volume"
-                  className="h-1 w-20 cursor-pointer accent-primary sm:w-28"
-                />
-                <span className="w-9 text-right text-[11px] tabular-nums text-muted">
-                  {Math.round((isMuted ? 0 : volume) * 100)}%
-                </span>
-
-                <select
-                  value={quality}
-                  onChange={(event) => handleQualityChange(event.target.value)}
-                  aria-label="Video quality"
-                  className="h-9 border border-line bg-transparent px-2 text-xs text-white focus:border-muted focus:outline-none"
-                >
-                  {QUALITIES.map((q) => (
-                    <option key={q} value={q} className="bg-bg">
-                      {q}p
-                    </option>
-                  ))}
-                </select>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleToggleFullscreen}
-                  aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-                >
-                  {isFullscreen ? (
-                    <Minimize size={16} aria-hidden="true" />
-                  ) : (
-                    <Maximize size={16} aria-hidden="true" />
-                  )}
-                </Button>
-              </div>
+          <div className="mt-3 sm:mt-4 flex flex-wrap items-center justify-between gap-2.5 max-w-5xl mx-auto px-1 sm:px-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {isTv ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-2 sm:h-9 sm:px-3 text-xs"
+                    onClick={handlePreviousEpisode}
+                    disabled={episode <= 1}
+                  >
+                    <ChevronLeft size={15} aria-hidden="true" />
+                    Previous
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-2 sm:h-9 sm:px-3 text-xs"
+                    onClick={handleNextEpisode}
+                  >
+                    Next
+                    <ChevronRight size={15} aria-hidden="true" />
+                  </Button>
+                </>
+              ) : null}
             </div>
 
-            <p className="mt-2 max-w-5xl mx-auto text-[11px] text-muted/70">
-              Space play/pause · F fullscreen · ←/→ 10s · ↑/↓ volume
-            </p>
-          </>
+            <div className="flex items-center flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 sm:h-9 sm:w-9"
+                onClick={handleToggleMute}
+                aria-label={isMuted ? 'Unmute' : 'Mute'}
+              >
+                {isMuted || volume === 0 ? (
+                  <VolumeX size={15} aria-hidden="true" />
+                ) : (
+                  <Volume2 size={15} aria-hidden="true" />
+                )}
+              </Button>
+
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={isMuted ? 0 : volume}
+                onChange={(event) => handleVolumeChange(Number(event.target.value))}
+                aria-label="Volume"
+                className="h-1 w-14 cursor-pointer accent-primary sm:w-24 md:w-28"
+              />
+              <span className="hidden w-8 text-right text-[10px] tabular-nums text-muted xs:inline-block sm:w-9 sm:text-[11px]">
+                {Math.round((isMuted ? 0 : volume) * 100)}%
+              </span>
+
+              <select
+                value={quality}
+                onChange={(event) => handleQualityChange(event.target.value)}
+                aria-label="Video quality"
+                className="h-8 border border-line bg-surface sm:bg-transparent px-1.5 text-[11px] sm:h-9 sm:px-2 sm:text-xs text-white focus:border-muted focus:outline-none rounded"
+              >
+                {QUALITIES.map((q) => (
+                  <option key={q} value={q} className="bg-bg">
+                    {q}p
+                  </option>
+                ))}
+              </select>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 sm:h-9 sm:w-9"
+                onClick={handleToggleFullscreen}
+                aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+              >
+                {isFullscreen ? (
+                  <Minimize size={15} aria-hidden="true" />
+                ) : (
+                  <Maximize size={15} aria-hidden="true" />
+                )}
+              </Button>
+            </div>
+          </div>
         )}
 
         {playerError && (

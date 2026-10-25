@@ -140,8 +140,11 @@ export default function MobileNavigation({ open, onClose, onSearch }: MobileNavi
                 Search movies and TV shows
               </button>
 
-              <div>
-                <p className="eyebrow mb-3">Where to watch</p>
+              <div className="border-t border-line pt-6">
+                <p className="eyebrow mb-2">WatchKITA</p>
+                <p className="text-xs text-muted leading-relaxed">
+                  Cinematic streaming &amp; discovery guide. Let&rsquo;s watch, together.
+                </p>
               </div>
             </div>
           </motion.nav>

@@ -124,15 +124,15 @@ export default function CatalogBrowser({ mode, title, description }: CatalogBrow
 
   return (
     <div>
-      <div className="shell pb-8 pt-28 lg:pt-36">
+      <div className="shell pb-6 pt-20 sm:pb-8 sm:pt-28 lg:pt-36">
         <div className="flex items-center gap-3">
           <span className="h-[2px] w-6 bg-primary" aria-hidden="true" />
           <p className="eyebrow">
             {mode === 'discover' ? 'Browse the catalog' : mode === 'movies' ? 'Films' : 'Series'}
           </p>
         </div>
-        <h1 className="mt-4 font-serif text-4xl leading-tight text-white sm:text-5xl">{title}</h1>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{description}</p>
+        <h1 className="mt-2 sm:mt-4 font-serif text-3xl leading-tight text-white sm:text-5xl">{title}</h1>
+        <p className="mt-2 sm:mt-4 max-w-2xl text-xs sm:text-sm leading-relaxed text-muted">{description}</p>
       </div>
 
       <DiscoveryFilters

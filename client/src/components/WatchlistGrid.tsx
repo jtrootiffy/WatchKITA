@@ -14,7 +14,7 @@ interface WatchlistGridProps {
 export default function WatchlistGrid({ items, view, onRemove }: WatchlistGridProps) {
   if (view === 'grid') {
     return (
-      <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-4 sm:gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {items.map((item) => (
           <PosterCard
             key={item.titleId}
@@ -44,10 +44,10 @@ export default function WatchlistGrid({ items, view, onRemove }: WatchlistGridPr
   return (
     <ul className="divide-y divide-line border-y border-line">
       {items.map((item) => (
-        <li key={item.titleId} className="flex items-center gap-4 py-4">
+        <li key={item.titleId} className="flex items-center gap-3 sm:gap-4 py-3 sm:py-4">
           <Link
             to={`/title/${item.titleId}?type=${item.type}`}
-            className="h-[72px] w-12 shrink-0 overflow-hidden"
+            className="h-16 w-11 sm:h-[72px] sm:w-12 shrink-0 overflow-hidden rounded bg-surface"
             tabIndex={-1}
             aria-hidden="true"
           >

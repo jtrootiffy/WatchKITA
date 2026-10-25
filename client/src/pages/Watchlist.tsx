@@ -35,14 +35,14 @@ export default function Watchlist() {
   }, [items, query])
 
   return (
-    <div className="shell pb-20 pt-28 lg:pt-36">
-      <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+    <div className="shell pb-16 pt-20 sm:pb-20 sm:pt-28 lg:pt-36">
+      <div className="flex flex-col justify-between gap-4 sm:gap-6 sm:flex-row sm:items-end">
         <div>
           <div className="flex items-center gap-3">
             <span className="h-[2px] w-6 bg-primary" aria-hidden="true" />
             <p className="eyebrow">Library</p>
           </div>
-          <h1 className="mt-4 font-serif text-4xl leading-tight text-white sm:text-5xl">
+          <h1 className="mt-2 sm:mt-4 font-serif text-3xl leading-tight text-white sm:text-5xl">
             My watchlist
           </h1>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted">

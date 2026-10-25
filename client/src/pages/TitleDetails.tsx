@@ -129,12 +129,12 @@ export default function TitleDetails() {
 
   return (
     <article>
-      <div className="relative h-[36vh] min-h-[260px] max-h-[460px] border-b border-line bg-surface">
+      <div className="relative h-[28vh] sm:h-[36vh] min-h-[220px] sm:min-h-[260px] max-h-[460px] border-b border-line bg-surface">
         {details.backdrop ? (
           <img src={details.backdrop} alt="" className="h-full w-full object-cover" />
         ) : null}
         <div className="absolute inset-0 bg-bg/70" aria-hidden="true" />
-        <div className="shell absolute inset-x-0 top-20">
+        <div className="shell absolute inset-x-0 top-18 sm:top-20">
           <Link
             to="/discover"
             className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted transition-colors hover:text-white"
@@ -146,9 +146,9 @@ export default function TitleDetails() {
       </div>
 
       <div className="shell">
-        <div className="grid gap-8 lg:grid-cols-[240px_1fr] lg:gap-12">
-          <div className="-mt-24 lg:-mt-32">
-            <div className="aspect-[2/3] w-[150px] max-w-[240px] overflow-hidden bg-surface sm:w-[190px] lg:w-full">
+        <div className="grid gap-6 sm:gap-8 lg:grid-cols-[240px_1fr] lg:gap-12">
+          <div className="-mt-16 sm:-mt-24 lg:-mt-32">
+            <div className="aspect-[2/3] w-[130px] sm:w-[190px] lg:w-full max-w-[240px] overflow-hidden bg-surface rounded-md sm:rounded-none shadow-xl">
               <TitleImage
                 src={details.posterLarge ?? details.poster}
                 alt={`${details.title} poster`}
@@ -165,7 +165,7 @@ export default function TitleDetails() {
               {typeLabel(details.type)}
               {details.year ? ` · ${details.year}` : ''}
             </p>
-            <h1 className="mt-3 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
+            <h1 className="mt-2 sm:mt-3 font-serif text-2xl leading-tight text-white sm:text-4xl lg:text-5xl">
               {details.title}
             </h1>
 
@@ -220,8 +220,8 @@ export default function TitleDetails() {
               </div>
             ) : null}
 
-            <div className="mt-8 flex flex-wrap gap-2">
-              <Button variant={saved ? 'secondary' : 'primary'} onClick={handleWatchlist}>
+            <div className="mt-6 sm:mt-8 flex flex-wrap gap-2 sm:gap-2.5">
+              <Button variant={saved ? 'secondary' : 'primary'} size="sm" className="sm:h-11 sm:px-5 sm:text-sm" onClick={handleWatchlist}>
                 {saved ? <Check size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
                 {saved ? 'In watchlist' : 'Add to watchlist'}
               </Button>
@@ -232,6 +232,8 @@ export default function TitleDetails() {
                   target="_blank"
                   rel="noopener noreferrer"
                   variant="secondary"
+                  size="sm"
+                  className="sm:h-11 sm:px-5 sm:text-sm"
                 >
                   <Play size={15} aria-hidden="true" />
                   Trailer
@@ -242,6 +244,8 @@ export default function TitleDetails() {
               {details.tmdbId ? (
                 <Button
                   variant="primary"
+                  size="sm"
+                  className="sm:h-11 sm:px-5 sm:text-sm"
                   onClick={() => {
                     navigate(
                       buildWatchUrl(isTv(details.type) ? 'tv' : 'movie', details.tmdbId!, {
@@ -259,7 +263,7 @@ export default function TitleDetails() {
                 </Button>
               ) : null}
 
-              <Button variant="ghost" onClick={() => void handleShare()}>
+              <Button variant="ghost" size="sm" className="sm:h-11 sm:px-5 sm:text-sm" onClick={() => void handleShare()}>
                 <Share2 size={15} aria-hidden="true" />
                 Share
               </Button>
@@ -267,7 +271,7 @@ export default function TitleDetails() {
           </div>
         </div>
 
-        <div className="mt-14 space-y-12 pb-16">
+        <div className="mt-10 sm:mt-14 space-y-8 sm:space-y-12 pb-16">
           <StreamingProviders
             sources={sourcesQuery.data ?? []}
             isLoading={sourcesQuery.isLoading}

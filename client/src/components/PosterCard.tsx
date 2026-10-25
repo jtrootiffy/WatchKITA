@@ -54,7 +54,7 @@ export default function PosterCard({
   return (
     <article
       ref={containerRef}
-      className={`group relative ${layout === 'rail' ? 'w-[148px] shrink-0 sm:w-[168px] lg:w-[188px]' : 'w-full'}`}
+      className={`group relative ${layout === 'rail' ? 'w-[136px] shrink-0 sm:w-[160px] lg:w-[188px]' : 'w-full'}`}
     >
       <Link to={`/title/${item.id}?type=${item.type}`} className="block focus:outline-none">
         <div className="relative aspect-[2/3] overflow-hidden bg-surface">

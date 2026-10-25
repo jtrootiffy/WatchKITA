@@ -37,16 +37,16 @@ export default function TmdbSearch() {
     item.type === 'tv' ? `/watch/tv/${item.id}` : `/watch/movie/${item.id}`
 
   return (
-    <div className="shell pb-20 pt-28 lg:pt-36">
+    <div className="shell pb-16 pt-20 sm:pb-20 sm:pt-28 lg:pt-36">
       <div className="flex items-center gap-3">
         <span className="h-[2px] w-6 bg-primary" aria-hidden="true" />
         <p className="eyebrow">Search on TMDB</p>
       </div>
-      <h1 className="mt-4 font-serif text-4xl leading-tight text-white sm:text-5xl">
+      <h1 className="mt-2 sm:mt-4 font-serif text-2xl leading-tight text-white sm:text-4xl lg:text-5xl">
         {queryParam ? `TMDB results for “${queryParam}”` : 'Search TMDB'}
       </h1>
 
-      <form onSubmit={submit} className="mt-8 flex max-w-xl items-center border border-line">
+      <form onSubmit={submit} className="mt-6 sm:mt-8 flex w-full max-w-xl items-center border border-line">
         <Search size={16} className="ml-3 text-muted" aria-hidden="true" />
         <input
           value={term}
@@ -84,7 +84,7 @@ export default function TmdbSearch() {
             <p className="mb-6 text-xs text-muted">
               {results.length} {results.length === 1 ? 'result' : 'results'} from TMDB
             </p>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-4 sm:gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               {results.map((item) => (
                 <article
                   key={item.id}
