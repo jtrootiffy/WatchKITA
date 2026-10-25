@@ -6,23 +6,24 @@
   </picture>
 
   <p>
-    <a href="https://watchkita.vercel.app"><img src="https://img.shields.io/badge/LIVE-watchkita.vercel.app-0C0A0C?style=for-the-badge&amp;labelColor=D00000&amp;logo=vercel&amp;logoColor=white" alt="Live app: watchkita.vercel.app"></a>
+    <a href="https://watchkita.vercel.app/"><img src="https://img.shields.io/badge/LIVE-watchkita.vercel.app-0C0A0C?style=for-the-badge&amp;labelColor=D00000&amp;logo=vercel&amp;logoColor=white" alt="Live app: watchkita.vercel.app"></a>
     <img src="https://img.shields.io/badge/CATALOG-MOVIES%20%26%20SERIES-0C0A0C?style=for-the-badge&amp;labelColor=191619" alt="Catalog: Movies &amp; Series">
     <img src="https://img.shields.io/badge/REACT-18-0C0A0C?style=for-the-badge&amp;labelColor=191619&amp;logo=react&amp;logoColor=61DAFB" alt="React 18">
   </p>
 </div>
 
 <p align="center">
-  <a href="https://watchkita.vercel.app"><strong>watchkita.vercel.app</strong></a><br>
+  <a href="https://watchkita.vercel.app/"><strong>watchkita.vercel.app</strong></a><br>
   <sub><strong>WatchKITA</strong> · Cinematic streaming and discovery guide for movies and TV series.</sub>
 </p>
 
 WatchKITA is an editorial streaming web application and title discovery guide for film and
 television lovers. Built around a theater-dark aesthetic, it provides a distraction-free
 environment to discover trending titles, explore multi-genre catalogs, check legal regional
-streaming availability, and launch instant in-app playback. In Waray-Waray, **KITA** means
-"us" (the inclusive *we*), while **Watch** represents the cinema on screen. Together, the name
-expresses *Kita-kita* — **let's watch, together**.
+streaming availability, and launch instant in-app playback—bringing movie and television
+entertainment together into one cohesive interface. In Waray-Waray, **KITA** carries the intended
+wordplay of both **"watch"** and **"us,"** while **KITA-KITA** expresses the brand's invitation:
+*"let's watch."* Combining these meanings, **WatchKITA** communicates **"Let's watch together."**
 
 <p align="center">
   <a href="#what-it-does">What it does</a> ·
@@ -32,7 +33,7 @@ expresses *Kita-kita* — **let's watch, together**.
 
 **At a glance**
 
-- **Live app:** [watchkita.vercel.app](https://watchkita.vercel.app).
+- **Live app:** [watchkita.vercel.app](https://watchkita.vercel.app/).
 - **Purpose:** discover what's new, check regional streaming availability, and stream movies and TV shows in a single unified interface.
 - **Catalog:** movies and television series across genres, release years, and regions, powered by TMDB.
 - **Streaming:** in-app video playback via the CineSrc player engine with episode selection.
@@ -41,15 +42,14 @@ expresses *Kita-kita* — **let's watch, together**.
 
 ## The story behind the name
 
-In Waray-Waray, a major native language spoken across the Eastern Visayas in the Philippines,
-**KITA** means "us" — the inclusive we. In colloquial speech, *kita-kita* translates naturally to
-*"let's see each other"* or *"let's get together."* Pair that with **Watch**, and **WatchKITA**
-becomes a communal invitation: **let's watch, together**.
+WatchKITA brings together the idea of watching and togetherness. In Waray-Waray, **KITA**
+carries the intended wordplay of **"watch"** and **"us,"** while **KITA-KITA** expresses the
+brand's invitation: **"Let's watch."** WatchKITA is built around the idea of enjoying movies
+and television stories together.
 
-Streaming has become fragmented across scattered subscription platforms, regional barriers, and
-ad-heavy portals. WatchKITA brings the entire discovery and viewing journey under one roof:
-find what is trending, see where it is legally streaming in your country, and launch direct playback
-without leaving the theater atmosphere.
+WatchKITA brings title discovery and viewing into one unified experience, allowing users to
+explore trending titles, browse genres, check regional streaming availability, and launch
+playback within a cinematic interface.
 
 ---
 
@@ -131,20 +131,14 @@ features an editorial wide tracking on eyebrows.
 
 ## Stack
 
-| Layer | Choice |
+| Layer | Technology |
 | --- | --- |
-| Frontend | React 18, Vite 5, TypeScript 5, React Router 6 |
+| Frontend | React 18, Vite 5, TypeScript 5, React Router 6, TanStack Query |
 | Styling | Tailwind CSS 3, Framer Motion, Lucide React |
-| State & Cache | TanStack Query (React Query) |
-| Backend | Express 4, Node.js, Helmet, CORS, Rate Limit |
-| Metadata | TMDB (The Movie Database) API |
-| Streaming | CineSrc player engine |
-| Persistence | Supabase (PostgreSQL `api_cache` & `watchlist_items`), LocalStorage |
-| Hosting | Vercel (Edge static files & serverless API rewrites) |
 
 ---
 
 <div align="center">
   <sub><strong>WatchKITA</strong> · Cinematic Movie &amp; TV Streaming Experience · <em>Let's watch, together</em></sub><br>
-  <sub><a href="https://watchkita.vercel.app">watchkita.vercel.app</a></sub>
+  <sub><a href="https://watchkita.vercel.app/">watchkita.vercel.app</a></sub>
 </div>
