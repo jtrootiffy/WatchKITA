@@ -4,6 +4,7 @@ export function typeLabel(type: string): string {
   switch (type) {
     case 'movie':
       return 'Movie'
+    case 'tv':
     case 'tv_series':
       return 'TV Series'
     case 'tv_miniseries':

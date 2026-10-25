@@ -56,6 +56,45 @@ export function buildWatchTvUrl(tmdbId: number, season: number, episode: number)
   return `/watch/tv/${tmdbId}?season=${season}&episode=${episode}`
 }
 
+export interface WatchLinkMeta {
+  /** Where the player's back button returns to. */
+  back?: string | null
+  title?: string | null
+  year?: number | null
+  poster?: string | null
+}
+
+/**
+ * Adds the watch page's optional metadata to a watch URL while keeping any
+ * season/episode query the URL already carries, so the player header can render
+ * the title immediately instead of waiting on a details request.
+ */
+export function withWatchMeta(url: string, meta: WatchLinkMeta = {}): string {
+  const [pathname, search = ''] = url.split('?')
+  const params = new URLSearchParams(search)
+
+  if (meta.back) params.set('back', meta.back)
+  if (meta.title) params.set('title', meta.title)
+  if (meta.year) params.set('year', String(meta.year))
+  if (meta.poster) params.set('poster', meta.poster)
+
+  const query = params.toString()
+  return query ? `${pathname}?${query}` : pathname
+}
+
+/**
+ * Builds a watch URL for the first playable entry of a title, with metadata
+ * attached for the player page.
+ */
+export function buildWatchUrl(
+  mediaType: CineSrcMediaType,
+  tmdbId: number,
+  meta: WatchLinkMeta = {},
+): string {
+  const base = mediaType === 'tv' ? buildWatchTvUrl(tmdbId, 1, 1) : buildWatchMovieUrl(tmdbId)
+  return withWatchMeta(base, meta)
+}
+
 /**
  * Parses a watch page URL into media type, TMDB id, season, and episode.
  * Returns null when the pathname does not match a known watch route.

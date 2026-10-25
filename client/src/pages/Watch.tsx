@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Plus } from 'lucide-react'
+import { ArrowLeft, Check, Plus } from 'lucide-react'
 import { ApiError, errorMessage } from '@/lib/api'
 import {
   buildWatchTvUrl,
@@ -51,7 +51,7 @@ export default function Watch() {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { toggle } = useWatchlist()
+  const { has, toggle } = useWatchlist()
   const { addToast } = useToast()
 
   const parsed = parseWatchRoute(location.pathname, location.search)
@@ -76,6 +76,7 @@ export default function Watch() {
   const { mediaType, tmdbId } = parsed
   const isMovie = mediaType === 'movie'
   const isTvTitle = mediaType === 'tv'
+  const saved = has(tmdbId)
 
   const defaultSeason = parsed.season ?? 1
   const defaultEpisode = parsed.episode ?? 1
@@ -165,7 +166,7 @@ export default function Watch() {
         titleId: tmdbId,
         title: queryTitle || seriesData.title,
         year: queryYear ?? seriesData.year,
-          type: 'tv_series' as TitleType,
+        type: 'tv' as TitleType,
         poster: queryPoster ?? seriesData.poster,
       },
     }
@@ -206,8 +207,7 @@ export default function Watch() {
   const handleWatchlist = useCallback(() => {
     if (!data?.watchlistItem) return
     toggle(data.watchlistItem)
-    addToast('Watchlist updated', 'success')
-  }, [data, toggle, addToast])
+  }, [data, toggle])
 
   const handleSelectEpisode = useCallback(
     (seasonNumber: number, episodeNumber: number) => {
@@ -271,36 +271,32 @@ export default function Watch() {
 
   return (
     <article className="watch-page">
-      <header className="shell pb-6 lg:pb-10">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={goBack}>
-              <ArrowLeft size={16} aria-hidden="true" />
-              Back to details
-            </Button>
-          </div>
+      <header className="shell pt-28 pb-6 lg:pt-36 lg:pb-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Button variant="ghost" size="sm" onClick={goBack}>
+            <ArrowLeft size={16} aria-hidden="true" />
+            Back
+          </Button>
 
-          <div className="flex-1 lg:flex-none">
-            <p className="eyebrow">
-              {typeLabel(data.watchlistItem?.type ?? 'movie')}
-              {data.year ? ` · ${data.year}` : ''}
-            </p>
-            <h1 className="mt-3 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
-              {data.title}
-            </h1>
-          </div>
+          <Button
+            variant={saved ? 'secondary' : 'primary'}
+            size="sm"
+            onClick={handleWatchlist}
+            aria-pressed={saved}
+          >
+            {saved ? <Check size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
+            {saved ? 'In watchlist' : 'Add to watchlist'}
+          </Button>
+        </div>
 
-          <div className="mt-4 lg:mt-0 flex flex-wrap items-center gap-2">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={handleWatchlist}
-              disabled={isLoading}
-            >
-              <Plus size={16} aria-hidden="true" />
-              Add to watchlist
-            </Button>
-          </div>
+        <div className="mt-6 max-w-4xl">
+          <p className="eyebrow">
+            {typeLabel(isMovie ? 'movie' : 'tv')}
+            {data.year ? ` · ${data.year}` : ''}
+          </p>
+          <h1 className="mt-3 font-serif text-3xl leading-tight text-white sm:text-4xl lg:text-5xl">
+            {data.title}
+          </h1>
         </div>
       </header>
 
@@ -315,14 +311,8 @@ export default function Watch() {
       />
 
       <div className="shell pt-12 lg:pt-16 pb-20 lg:pb-24">
-        {data.backdrop ? (
-          <div className="aspect-[16/9] w-full overflow-hidden bg-surface rounded-lg mb-6">
-            <img src={data.backdrop} alt="" className="h-full w-full object-cover" />
-          </div>
-        ) : null}
-
         <div className="grid gap-8 lg:grid-cols-[260px_1fr] lg:gap-12">
-          <div className="-mt-2 lg:-mt-4">
+          <div>
             <div className="aspect-[2/3] w-full max-w-[260px] overflow-hidden bg-surface rounded-lg">
               <TitleImage
                 src={data.poster}
@@ -336,21 +326,10 @@ export default function Watch() {
           </div>
 
           <div className="pt-2 lg:pt-0">
-            <p className="eyebrow">
-              {typeLabel(data.watchlistItem?.type ?? 'movie')}
-              {data.year ? ` · ${data.year}` : ''}
-            </p>
-            <h2 className="mt-3 font-serif text-2xl leading-tight text-white sm:text-3xl lg:text-4xl">
-              {data.title}
-            </h2>
-
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted">
               {data.year ? <span>{data.year}</span> : null}
               {runtimeLabel(data.runtimeMinutes) ? (
                 <span>{runtimeLabel(data.runtimeMinutes)}</span>
-              ) : null}
-              {data.genres.length > 0 ? (
-                <span className="truncate">{data.genres.slice(0, 3).join(', ')}</span>
               ) : null}
             </div>
 
@@ -486,12 +465,6 @@ export default function Watch() {
               </>
             ) : null}
 
-            <div className="mt-10">
-              <ButtonLink variant="secondary" to={backUrl} size="sm">
-                <ArrowLeft size={15} aria-hidden="true" />
-                Back to details
-              </ButtonLink>
-            </div>
           </div>
         </div>
       </div>

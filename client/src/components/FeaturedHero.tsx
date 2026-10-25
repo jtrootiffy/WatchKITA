@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Info, Play } from 'lucide-react'
 import { criticScoreLabel, runtimeLabel, userRatingLabel } from '../lib/format'
 import { staggerContainer, fadeUp } from '../lib/motion'
+import { buildWatchUrl } from '../lib/player'
 import type { TitleDetails } from '../types'
 import { Button, ButtonLink } from './ui/Button'
 import TitleImage from './ui/TitleImage'
@@ -202,12 +203,18 @@ export default function FeaturedHero({ slides, isLoading, onRetry }: FeaturedHer
                 Explore title
               </ButtonLink>
               <ButtonLink
-                to={`/title/${slide.id}#where-to-watch`}
+                to={buildWatchUrl(slide.type === 'tv' ? 'tv' : 'movie', slide.tmdbId ?? slide.id, {
+                  back: '/',
+                  title: slide.title,
+                  year: slide.year,
+                  poster: slide.poster,
+                })}
                 size="lg"
                 variant="secondary"
+                aria-label={`Watch ${slide.title}`}
               >
                 <Play size={15} aria-hidden="true" />
-                Where to watch
+                Watch
               </ButtonLink>
             </motion.div>
 
