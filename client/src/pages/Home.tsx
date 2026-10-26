@@ -129,11 +129,9 @@ export default function Home() {
 
       <PosterRail
         title="Top picks by genre"
-        description={
-          pickedGenre
+        description={pickedGenre
             ? `Popular ${pickedGenre.name.toLowerCase()} titles.`
-            : 'Popular titles in a genre of your choosing.'
-        }
+            : 'Popular titles in a genre of your choosing.'}
         items={genrePicks.data?.titles ?? []}
         viewAllLink={pickedGenre ? `/discover?genres=${pickedGenre.id}` : '/discover'}
         isLoading={genrePicks.isLoading || genres.isLoading}
@@ -147,10 +145,10 @@ export default function Home() {
                   type="button"
                   aria-pressed={genre.id === genreId}
                   onClick={() => setGenreId(genre.id)}
-                  className={`border px-2.5 py-1.5 text-[11px] transition-colors ${
+                  className={`border border-line py-1.5 px-3 text-[11px] text-white transition-colors hover:border-primary hover:text-primary rounded-full text-xs capitalize transition-colors ${
                     genre.id === genreId
-                      ? 'border-primary bg-primary text-white'
-                      : 'border-line text-muted hover:border-muted hover:text-white'
+                      ? 'bg-primary text-white'
+                      : 'bg-surface text-muted hover:border-primary hover:text-primary'
                   }`}
                 >
                   {genre.name}

@@ -422,7 +422,7 @@ export default function CineSrcPlayer({
       <div className="shell pt-4 pb-12 sm:pt-6 sm:pb-16 lg:pt-10 lg:pb-20">
         <div
           ref={frameRef}
-          className="watch-player-frame relative aspect-video w-full max-w-5xl mx-auto overflow-hidden bg-black rounded-lg sm:rounded-xl shadow-2xl ring-1 ring-line/60"
+          className="watch-player-frame relative aspect-video w-full overflow-hidden bg-black rounded-lg sm:rounded-xl shadow-2xl ring-1 ring-line/60"
         >
           {playerError ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black text-white p-8">

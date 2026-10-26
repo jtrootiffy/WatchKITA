@@ -27,7 +27,10 @@ export default function TitleImage({
     setFailed(false)
   }, [src])
 
-  if (!src || failed) {
+  // If there is no src, or the src is not a valid non-empty URL, show fallback
+  const validSrc = typeof src === 'string' && src.length > 0 && !src.startsWith('data:') ? src : undefined
+
+  if (!validSrc || failed) {
     return (
       <div
         role="img"
@@ -43,7 +46,7 @@ export default function TitleImage({
 
   return (
     <img
-      src={src}
+      src={validSrc}
       alt={alt}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"

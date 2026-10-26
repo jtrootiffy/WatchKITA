@@ -273,8 +273,8 @@ export default function Watch() {
     <article className="watch-page">
       <header className="shell pt-20 sm:pt-28 pb-4 sm:pb-6 lg:pt-36 lg:pb-8">
         <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
-          <Button variant="ghost" size="sm" onClick={goBack}>
-            <ArrowLeft size={16} aria-hidden="true" />
+          <Button variant="ghost" size="sm" onClick={goBack} className="flex items-center gap-2">
+            <ArrowLeft size={16} aria-hidden="true" className="w-4 h-4" />
             Back
           </Button>
 
@@ -440,7 +440,7 @@ export default function Watch() {
                               onClick={handlePreviousEpisode}
                               disabled={!previousEpisode}
                             >
-                              <ArrowLeft size={14} aria-hidden="true" />
+                              <ArrowLeft size={14} aria-hidden="true" className="w-3.5 h-3.5" />
                               Previous
                             </Button>
                             <Button
@@ -450,7 +450,7 @@ export default function Watch() {
                               disabled={!nextEpisode}
                             >
                               Next
-                              <ArrowLeft size={14} aria-hidden="true" className="rotate-180" />
+                              <ArrowLeft size={14} aria-hidden="true" className="rotate-180 w-3.5 h-3.5" />
                             </Button>
                           </div>
                         </div>
